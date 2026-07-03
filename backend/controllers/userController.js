@@ -62,3 +62,28 @@ export async function updateProfile(req, res) {
     });
   }
 }
+
+
+export async function getAllUsers(req, res) {
+  try {
+    const result = await pool.query(
+      "SELECT user_id, username, email, role_id FROM users ORDER BY user_id DESC"
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+export async function deleteUser(req, res) {
+  try {
+    const { id } = req.params;
+
+    await pool.query("DELETE FROM users WHERE user_id = $1", [id]);
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}

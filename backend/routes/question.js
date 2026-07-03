@@ -1,13 +1,14 @@
 import express from "express";
 import * as q from "../controllers/questionController.js";
 const router = express.Router();
+import { authenticateToken } from "../middlewares/authMiddleware.js";
 
-//create queation
-router.post("/",q.createQuestion);
-//get all queation
+
+router.post("/", authenticateToken, q.createQuestion);
 router.get("/",q.getQuestions);
-//get by id
 router.get("/:id",q.getQuestionById);
+router.put("/:id", q.updateQuestion);
+router.delete("/:id", q.deleteQuestion);
 
 export default router;
 

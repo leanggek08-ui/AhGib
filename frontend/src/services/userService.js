@@ -1,50 +1,39 @@
 const BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-function getToken() {
-  return localStorage.getItem("token");
-}
 
-// GET PROFILE
-async function getProfile() {
-  const res = await fetch(`${BASE_URL}/users/profile`, {
-    method: "GET",
+
+
+async function request(path, method = "GET", body = null) {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method,
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
+      Authorization: `Bearer ${token}`,
     },
+    body: body ? JSON.stringify(body) : null,
   });
 
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data.message || "Failed to load profile");
-  }
-
-  return data;
-}
-
-// UPDATE PROFILE
-async function updateProfile(username) {
-  const res = await fetch(`${BASE_URL}/users/profile`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: JSON.stringify({ username }),
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    throw new Error(data.message || "Failed to update profile");
+    throw new Error(data.message || data.error || "Request failed");
   }
 
   return data;
 }
 
 export const userService = {
-  getProfile,
-  updateProfile,
+  // profile (already used)
+  getProfile: () => request("/users/profile"),
+
+  updateProfile: (username) =>
+    request("/users/profile", "PUT", { username }),
+
+  // ADMIN USERS
+  getAllUsers: () => request("/users"),
+
+  deleteUser: (id) => request(`/users/${id}`, "DELETE"),
 };
