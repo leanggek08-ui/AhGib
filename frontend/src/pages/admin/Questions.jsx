@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { questionService } from "../../services/questionService";
+import { styles } from "../../styles/adminQuestionsStyles";
 
 export default function Questions() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [deletingId, setDeletingId] = useState(null);
 
   const [form, setForm] = useState({
     question_text: "",
     question_type: "",
-    subject: ""
+    subject: "",
   });
 
   useEffect(() => {
@@ -34,17 +36,23 @@ export default function Questions() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this question?")) return;
 
+    setDeletingId(id);
     try {
       await questionService.delete(id);
       setQuestions(questions.filter((q) => q.question_id !== id));
     } catch (err) {
       alert(err.message);
+    } finally {
+      setDeletingId(null);
     }
   };
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const resetForm = () =>
+    setForm({ question_text: "", question_type: "", subject: "" });
 
   const handleCreate = async () => {
     if (!form.question_text || !form.question_type || !form.subject) {
@@ -53,203 +61,236 @@ export default function Questions() {
     }
 
     try {
-      await questionService.create({
-        question_text: form.question_text,
-        question_type: form.question_type,
-        subject: form.subject
-    });
-    // reset form
-    setForm({
-      question_text: "",
-      question_type: "",
-      subject: ""
-    });
-
-    // close modal
-    setShowModal(false);
-
-    // reload table
-    loadQuestions();
-
-    alert("Question created successfully ✅");
+      setSaving(true);
+      await questionService.create(form);
+      resetForm();
+      setShowModal(false);
+      loadQuestions();
+      alert("Question created successfully ✅");
     } catch (err) {
       alert(err.message);
+    } finally {
+      setSaving(false);
     }
   };
 
-  const filteredQuestions = questions.filter((q) =>
-    q.question_text.toLowerCase().includes(search.toLowerCase()) ||
-    q.question_type.toLowerCase().includes(search.toLowerCase()) ||
-    q.subject.toLowerCase().includes(search.toLowerCase())
+  const handleEdit = (question) => {
+    setEditingId(question.question_id);
+    setForm({
+      question_text: question.question_text,
+      question_type: question.question_type,
+      subject: question.subject,
+    });
+    setShowModal(true);
+  };
+
+  const handleUpdate = async () => {
+    try {
+      setSaving(true);
+      await questionService.update(editingId, form);
+      setShowModal(false);
+      setEditingId(null);
+      resetForm();
+      loadQuestions();
+      alert("Question updated successfully ✅");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const filteredQuestions = questions.filter(
+    (q) =>
+      q.question_text.toLowerCase().includes(search.toLowerCase()) ||
+      q.question_type.toLowerCase().includes(search.toLowerCase()) ||
+      q.subject.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <AdminLayout>
-      <div style={{ padding: 20 }}>
+      <div style={styles.header}>
+        <div>
+          <h1 style={styles.pageTitle}>Questions</h1>
+          <p style={styles.subtitle}>Manage assessment questions</p>
+        </div>
 
-        <h1 style={{ fontSize: 24, fontWeight: "bold" }}>
-          Questions Management
-        </h1>
-
-        {/* SEARCH */}
-        <input
-          placeholder="Search question..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            marginTop: 15,
-            marginBottom: 20,
-            padding: 10,
-            width: "300px",
-            borderRadius: 6,
-          }}
-        />
-
-        {/* ADD BUTTON */}
         <button
-          onClick={() => setShowModal(true)}
-          style={{
-            marginLeft: 10,
-            padding: "10px 15px",
-            background: "#4f46e5",
-            color: "white",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
+          onClick={() => {
+            setEditingId(null);
+            resetForm();
+            setShowModal(true);
           }}
+          style={styles.addBtn}
         >
           + Add Question
         </button>
+      </div>
 
-        {/* TABLE */}
+      <div style={styles.toolbar}>
+        <div style={styles.searchWrap}>
+          <span style={styles.searchIcon}>🔍</span>
+          <input
+            placeholder="Search by question, type, or subject..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={styles.searchInput}
+          />
+        </div>
+        <span style={styles.countBadge}>
+          {filteredQuestions.length} question
+          {filteredQuestions.length !== 1 ? "s" : ""}
+        </span>
+      </div>
+
+      <div style={styles.tableCard}>
         {loading ? (
-          <p>Loading...</p>
+          <div>
+            {[...Array(5)].map((_, i) => (
+              <div key={i} style={styles.skeletonRow}>
+                <div style={styles.skeletonBar("70%")} />
+              </div>
+            ))}
+          </div>
+        ) : filteredQuestions.length === 0 ? (
+          <div style={styles.emptyState}>
+            <div style={styles.emptyIcon}>❓</div>
+            <p>No questions found{search ? ` for "${search}"` : ""}.</p>
+          </div>
         ) : (
-          <table
-            style={{
-              width: "100%",
-              marginTop: 20,
-              borderCollapse: "collapse",
-              background: "#fff",
-              borderRadius: 8,
-              overflow: "hidden",
-            }}
-          >
-            <thead style={{ background: "#f3f4f6" }}>
+          <table style={styles.table}>
+            <thead>
               <tr>
-                <th>ID</th>
-                <th>Question</th>
-                <th>Type</th>
-                <th>Subject</th>
-                <th>Actions</th>
+                <th style={styles.th}>Question</th>
+                <th style={styles.th}>Type</th>
+                <th style={styles.th}>Subject</th>
+                <th style={styles.th}>Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {filteredQuestions.map((q) => (
-                <tr key={q.question_id}>
-                  <td>{q.question_id}</td>
-                  <td>{q.question_text}</td>
-                  <td>{q.question_type}</td>
-                  <td>{q.subject}</td>
-
-                  <td>
-                    <button
-                      style={{
-                        marginRight: 8,
-                        padding: "5px 10px",
-                        background: "#f59e0b",
-                        border: "none",
-                        borderRadius: 5,
-                        color: "white",
-                      }}
-                    >
-                      Edit
-                    </button>
-
-                    <button
-                      onClick={() => handleDelete(q.question_id)}
-                      style={{
-                        padding: "5px 10px",
-                        background: "#ef4444",
-                        border: "none",
-                        borderRadius: 5,
-                        color: "white",
-                      }}
-                    >
-                      Delete
-                    </button>
+                <tr
+                  key={q.question_id}
+                  style={styles.row}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.background = "#FAFAFB")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.background = "transparent")
+                  }
+                >
+                  <td style={styles.td}>
+                    <div style={styles.questionText}>{q.question_text}</div>
+                    <div style={{ fontSize: "12px", color: "#9CA3AF", marginTop: "4px" }}>
+                      ID: {q.question_id}
+                    </div>
+                  </td>
+                  <td style={styles.td}>
+                    <span style={styles.typeBadge}>{q.question_type}</span>
+                  </td>
+                  <td style={styles.td}>
+                    <span style={styles.subjectBadge}>{q.subject}</span>
+                  </td>
+                  <td style={styles.td}>
+                    <div style={styles.actions}>
+                      <button onClick={() => handleEdit(q)} style={styles.editBtn}>
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(q.question_id)}
+                        disabled={deletingId === q.question_id}
+                        style={{
+                          ...styles.deleteBtn,
+                          opacity: deletingId === q.question_id ? 0.5 : 1,
+                        }}
+                      >
+                        {deletingId === q.question_id ? "Deleting..." : "Delete"}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+      </div>
 
-        {/* MODAL */}
-        {showModal && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              background: "rgba(0,0,0,0.5)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-          >
-            <div
-              style={{
-                background: "white",
-                padding: 20,
-                borderRadius: 10,
-                width: 400
-              }}
-            >
-              <h2>Add Question</h2>
+      {/* MODAL */}
+      {showModal && (
+        <div style={styles.overlay}>
+          <div style={styles.modal}>
+            <div style={styles.modalHeader}>
+              <h2 style={styles.modalTitle}>
+                {editingId ? "Edit Question" : "Add Question"}
+              </h2>
+              <button
+                style={styles.closeIcon}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                  resetForm();
+                }}
+              >
+                ✕
+              </button>
+            </div>
 
-              <input
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Question</label>
+              <textarea
                 name="question_text"
-                placeholder="Question"
+                placeholder="Enter the question..."
                 value={form.question_text}
                 onChange={handleChange}
-                style={{ width: "100%", marginBottom: 10 }}
+                style={styles.textarea}
               />
+            </div>
 
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Question Type</label>
               <input
                 name="question_type"
-                placeholder="Question Type"
+                placeholder="e.g. Multiple Choice"
                 value={form.question_type}
                 onChange={handleChange}
-                style={{ width: "100%", marginBottom: 10 }}
+                style={styles.input}
               />
+            </div>
 
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Subject</label>
               <input
                 name="subject"
-                placeholder="Subject"
+                placeholder="e.g. Mathematics"
                 value={form.subject}
                 onChange={handleChange}
-                style={{ width: "100%", marginBottom: 10 }}
+                style={styles.input}
               />
+            </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <button onClick={() => setShowModal(false)}>
-                    Cancel
-                </button>
-
-                
-                <button onClick={handleCreate} disabled={saving}>
-                    {saving ? "Saving..." : "Save"}
-                </button>
-              </div>
+            <div style={styles.modalFooter}>
+              <button
+                style={styles.cancelBtn}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                  resetForm();
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
+                onClick={editingId ? handleUpdate : handleCreate}
+                disabled={saving}
+              >
+                {saving ? "Saving..." : editingId ? "Update" : "Save"}
+              </button>
             </div>
           </div>
-        )}
-
-      </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

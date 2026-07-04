@@ -7,28 +7,19 @@ export default function Topbar() {
     <div style={styles.topbar}>
       <div>
         <h2 style={styles.title}>Admin Management</h2>
+        <div style={styles.subtitle}>Welcome back, manage your platform</div>
       </div>
 
       <div style={styles.userArea}>
-        <div>
-          <div style={{ fontWeight: 600 }}>
-            {user?.username || "Admin"}
-          </div>
-
-          <div
-            style={{
-              fontSize: "13px",
-              color: "#6B7280",
-            }}
-          >
+        <div style={styles.userInfo}>
+          <div style={styles.userName}>{user?.username || "Admin"}</div>
+          <div style={styles.userRole}>
             {user?.role_id === 1 ? "Super Admin" : "Admin"}
           </div>
         </div>
 
         <div style={styles.avatar}>
-          {(user?.username || "A")
-            .charAt(0)
-            .toUpperCase()}
+          {(user?.username || "A").charAt(0).toUpperCase()}
         </div>
       </div>
     </div>

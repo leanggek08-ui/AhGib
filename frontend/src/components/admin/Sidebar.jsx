@@ -19,36 +19,44 @@ export default function Sidebar() {
     <div style={styles.sidebar}>
       {/* Top */}
       <div>
-        <div style={styles.logo}>
-          AhGib Admin
-        </div>
+        <div style={styles.logo}>AhGib</div>
+        <div style={styles.logoSub}>Admin Panel</div>
 
         <div style={styles.menu}>
           <NavLink to="/admin/dashboard" style={menuStyle}>
-            📊 Dashboard
+            <span style={styles.menuIcon}>📊</span> Dashboard
           </NavLink>
 
           <NavLink to="/admin/users" style={menuStyle}>
-            👤 Users
+            <span style={styles.menuIcon}>👤</span> Users
           </NavLink>
 
           <NavLink to="/admin/questions" style={menuStyle}>
-            ❓ Questions
+            <span style={styles.menuIcon}>❓</span> Questions
           </NavLink>
 
           <NavLink to="/admin/universities" style={menuStyle}>
-            🎓 Universities
+            <span style={styles.menuIcon}>🎓</span> Universities
           </NavLink>
         </div>
       </div>
 
       {/* Bottom */}
-      <button
-        onClick={logout}
-        style={styles.logout}
-      >
-        Logout
-      </button>
+      <div style={styles.sidebarFooter}>
+        <div style={styles.divider} />
+        <button
+          onClick={logout}
+          style={styles.logout}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(220,38,38,.22)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(220,38,38,.12)";
+          }}
+        >
+          🚪 Logout
+        </button>
+      </div>
     </div>
   );
 }

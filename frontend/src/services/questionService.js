@@ -43,4 +43,8 @@ export const questionService = {
   // DELETE question
   delete: (id) =>
     request(`/questions/${id}`, "DELETE"),
+
+  // update
+  update: (id, data) =>
+  request(`/questions/${id}`, "PUT", data),
 };
