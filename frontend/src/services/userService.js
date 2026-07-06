@@ -34,6 +34,10 @@ export const userService = {
 
   // ADMIN USERS
   getAllUsers: () => request("/users"),
-
+  // Delete user
   deleteUser: (id) => request(`/users/${id}`, "DELETE"),
+  //update user
+  updateUser: (id, data) =>
+  request(`/users/${id}`, "PUT", data),
+
 };

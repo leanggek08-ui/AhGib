@@ -1,15 +1,28 @@
+// adminDashboardStyles.js — dark navy/indigo theme
+
 export const styles = {
   pageTitle: {
     fontSize: "28px",
     fontWeight: "700",
-    color: "#111827",
+    color: "#F9FAFB",
     marginBottom: "6px",
   },
 
   subtitle: {
-    color: "#6B7280",
+    color: "#9CA3AF",
     marginBottom: "32px",
     fontSize: "15px",
+  },
+
+  loadingText: {
+    color: "#E5E7EB",
+    fontSize: "15px",
+  },
+
+  emptyText: {
+    color: "#6B7280",
+    fontSize: "14px",
+    padding: "12px 0",
   },
 
   cards: {
@@ -20,11 +33,11 @@ export const styles = {
   },
 
   card: {
-    background: "#fff",
+    background: "#1E2333",
     borderRadius: "18px",
     padding: "24px",
-    boxShadow: "0 5px 20px rgba(0,0,0,.05)",
-    border: "1px solid #F1F3F5",
+    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
+    border: "1px solid #2B3245",
     display: "flex",
     flexDirection: "column",
     gap: "16px",
@@ -42,7 +55,7 @@ export const styles = {
     width: "48px",
     height: "48px",
     borderRadius: "14px",
-    background: `${color}18`, // light tint of the color
+    background: `${color}26`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -54,12 +67,12 @@ export const styles = {
     fontWeight: "700",
     padding: "4px 10px",
     borderRadius: "20px",
-    background: positive ? "#DCFCE7" : "#FEE2E2",
-    color: positive ? "#16A34A" : "#DC2626",
+    background: positive ? "#064E3B" : "#4C0519",
+    color: positive ? "#6EE7B7" : "#FCA5A5",
   }),
 
   cardTitle: {
-    color: "#6B7280",
+    color: "#9CA3AF",
     fontSize: "14px",
     fontWeight: "500",
   },
@@ -67,7 +80,7 @@ export const styles = {
   cardValue: {
     fontSize: "32px",
     fontWeight: "800",
-    color: "#111827",
+    color: "#F9FAFB",
     lineHeight: 1,
   },
 
@@ -80,8 +93,6 @@ export const styles = {
     background: color,
   }),
 
-  /* ===== Layout for grid section (activity + quick info) ===== */
-
   grid: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr",
@@ -89,11 +100,11 @@ export const styles = {
   },
 
   section: {
-    background: "#fff",
+    background: "#1E2333",
     borderRadius: "18px",
     padding: "24px",
-    boxShadow: "0 5px 20px rgba(0,0,0,.05)",
-    border: "1px solid #F1F3F5",
+    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
+    border: "1px solid #2B3245",
   },
 
   sectionHeader: {
@@ -106,12 +117,13 @@ export const styles = {
   sectionTitle: {
     fontSize: "18px",
     fontWeight: "700",
-    color: "#111827",
+    color: "#F9FAFB",
+    margin: 0,
   },
 
   viewAll: {
     fontSize: "13px",
-    color: "#4F46E5",
+    color: "#818CF8",
     fontWeight: "600",
     cursor: "pointer",
   },
@@ -121,14 +133,14 @@ export const styles = {
     alignItems: "center",
     gap: "14px",
     padding: "14px 0",
-    borderBottom: "1px solid #F1F3F5",
+    borderBottom: "1px solid #2B3245",
   },
 
   activityIcon: (color) => ({
     width: "38px",
     height: "38px",
     borderRadius: "10px",
-    background: `${color}18`,
+    background: `${color}26`,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -138,7 +150,7 @@ export const styles = {
 
   activityText: {
     fontSize: "14.5px",
-    color: "#111827",
+    color: "#E5E7EB",
     fontWeight: "500",
     flex: 1,
   },
@@ -147,8 +159,6 @@ export const styles = {
     fontSize: "12.5px",
     color: "#9CA3AF",
   },
-
-  /* ===== Side quick panel ===== */
 
   quickPanel: {
     display: "flex",

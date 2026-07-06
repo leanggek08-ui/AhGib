@@ -1,63 +1,82 @@
 import  pool from "../db/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { logActivity } from "../utils/activityLogger.js";
 // register 
-export async function register(req,res){
-    try{
-        const{username,email,password,role_id} = req.body;
-        const hash = await bcrypt.hash(password,10);
-        const result = await pool.query( `INSERT INTO users (username, email, password, role_id)
-             VALUES ($1,$2,$3,$4)
-             RETURNING user_id, username, email, role_id`,
-            [username, email, hash, role_id || 2]);
-        res.json({ message: "User registered successfully", user: result.rows[0]})
+export async function register(req, res) {
+  try {
+    const { username, email, password } = req.body;
 
-    }catch(err){
-        res.status(500).json({error: err.message });
-    }
+    const hash = await bcrypt.hash(password, 10);
+
+    const result = await pool.query(
+      `INSERT INTO users (username, email, password, role_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING user_id, username, email, role_id`,
+      [username, email, hash, 2]
+    );
+
+    await logActivity(
+      "user_register",
+      `New user ${username} registered`,
+      result.rows[0].user_id
+    );
+
+    return res.json({
+      message: "User registered successfully",
+      user: result.rows[0]
+    });
+
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
+  }
 }
-
 // Login 
-export async function login(req,res){
-    try{
-        const {email,password} = req.body;
-        const user = await pool.query( "SELECT * FROM users WHERE email = $1", [email]);
-        if (user.rows.length === 0) {
-            return res.status(400).json({ message: "User not found" });
-        }
+export async function login(req, res) {
+  try {
+    const { email, password } = req.body;
 
-        const valid = await bcrypt.compare(password, user.rows[0].password);
+    const userResult = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email]
+    );
 
-        if (!valid) {
-            return res.status(401).json({ message: "Invalid password" });
-        }
-         const token = jwt.sign(
-            {
-                user_id: user.rows[0].user_id,
-                role_id: user.rows[0].role_id
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
-
-        res.json({
-            message: "Login successful",
-            token,
-            user: {
-                user_id: user.rows[0].user_id,
-                username: user.rows[0].username,
-                role_id: user.rows[0].role_id
-            }
-        });
-
-
-    }catch(err){
-        res.status(500).json({ error: err.message });
-
+    if (userResult.rows.length === 0) {
+      return res.status(400).json({ message: "User not found" });
     }
-}
 
+    const user = userResult.rows[0]; // ⭐ FIX HERE
+
+    const valid = await bcrypt.compare(password, user.password);
+
+    if (!valid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
+
+    // ⭐ FIX JWT
+    const token = jwt.sign(
+      {
+        user_id: user.user_id,
+        role_id: user.role_id,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    res.json({
+      message: "Login successful",
+      token,
+      user: {
+        user_id: user.user_id,
+        username: user.username,
+        role_id: user.role_id,
+      },
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
 // forget password
 export async function forgotPassword(req, res) {
     try {

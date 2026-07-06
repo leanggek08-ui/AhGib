@@ -8,6 +8,9 @@ import EditProfile from "../pages/profile/EditProfile";
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import Users from "../pages/admin/Users";
 import Questions from "../pages/admin/Questions";
+import ProtectedRoute from "./ProtectedRoute";
+import Unauthorized from "../pages/Unauthorized";
+import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
 
 export default function AppRoutes() {
   return (
@@ -18,11 +21,15 @@ export default function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<ProtectedRoute allowedRoles={[1,2]}><Profile /></ProtectedRoute>}/>
         <Route path="/profile/edit" element={<EditProfile />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />}/>
-        <Route path="/admin/users" element={<Users />} />
-        <Route path="/admin/questions" element={<Questions />} />
+        <Route path="/admin/users" element={ <ProtectedRoute allowedRoles={[1,3]}> <Users /></ProtectedRoute> }/>
+        <Route path="/admin/questions" element={ <ProtectedRoute allowedRoles={[1,3]}>  <Questions /></ProtectedRoute>}/>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/admin/dashboard" element={ <ProtectedRoute allowedRoles={[1,3]}> <AdminDashboard /> </ProtectedRoute>}/>
+        <Route path="/admin/super-users" element={<ProtectedRoute allowedRoles={[3]}><SuperAdminUsers /></ProtectedRoute>}/>
+
 
       </Routes>
     </BrowserRouter>

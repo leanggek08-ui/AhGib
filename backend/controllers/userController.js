@@ -1,4 +1,5 @@
 import pool from "../db/db.js";
+import { logActivity } from "../utils/activityLogger.js";
 
 /**
  * Get current user's profile
@@ -82,8 +83,38 @@ export async function deleteUser(req, res) {
 
     await pool.query("DELETE FROM users WHERE user_id = $1", [id]);
 
-    res.json({ message: "User deleted successfully" });
+    await logActivity(
+      "user_delete",
+      `User ID ${id} was deleted`,
+      req.user.user_id
+    );
+
+    return res.json({ message: "User deleted successfully" });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+export async function updateUser(req, res) {
+  try {
+    const { id } = req.params;
+    const { role_id } = req.body;
+
+    const result = await pool.query(
+      "UPDATE users SET role_id = $1 WHERE user_id = $2 RETURNING *",
+      [role_id, id]
+    );
+
+    await logActivity(
+      "role_update",
+      `User ID ${id} role updated to ${role_id}`,
+      req.user.user_id
+    );
+
+    return res.json(result.rows[0]);
+
+  } catch (err) {
+    return res.status(500).json({ error: err.message });
   }
 }

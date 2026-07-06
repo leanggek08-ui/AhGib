@@ -14,7 +14,7 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -24,15 +24,22 @@ export default function Login() {
       const data = await authService.login(form.email, form.password);
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("user", JSON.stringify(data.user));;
 
-      navigate(data.user.role_id === 1 ? "/admin/dashboard" : "/student/dashboard");
+      // role redirect
+      if (data.user.role_id === 1 || data.user.role_id === 3) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/student/dashboard");
+      }
+
     } catch (err) {
       setError(err.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div style={styles.backdrop}>

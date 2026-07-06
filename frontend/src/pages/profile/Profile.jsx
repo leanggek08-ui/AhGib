@@ -70,7 +70,7 @@ export default function Profile() {
         <div style={styles.row}>
           <span style={styles.label}>Role</span>
           <span style={styles.badge}>
-            {user?.role_id === 1 ? "Admin" : "Student"}
+            {user?.role_id === 3 ? "Super Admin" : user?.role_id === 1 ? "Admin" : "Student"}
           </span>
         </div>
       </div>

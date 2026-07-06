@@ -14,7 +14,7 @@ export default function Topbar() {
         <div style={styles.userInfo}>
           <div style={styles.userName}>{user?.username || "Admin"}</div>
           <div style={styles.userRole}>
-            {user?.role_id === 1 ? "Super Admin" : "Admin"}
+            {user?.role_id === 3 ? "Super Admin" : user?.role_id === 1 ? "Admin" : "Student"}
           </div>
         </div>
 

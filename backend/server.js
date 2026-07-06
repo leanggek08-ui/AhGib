@@ -7,6 +7,8 @@ import assessmentRoutes from "./routes/assessment.js";
 import answerRoutes from "./routes/answer.js";
 import scoreRoutes from "./routes/score.js";
 import userRoutes from "./routes/user.js";
+import adminRoutes from "./routes/admin.js";
+import dashboardRoutes from "./routes/dashboard.js";
 import dotenv from "dotenv";
 import pool from "./db/db.js";
 const app = express();
@@ -23,6 +25,8 @@ app.use("/questions", questionRoutes);
 app.use("/answers", answerRoutes);
 app.use("/score", scoreRoutes);
 app.use("/users", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/dashboard", dashboardRoutes);
 
 
 // test route

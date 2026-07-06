@@ -8,6 +8,16 @@ export default function Users() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [deletingId, setDeletingId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+
+  const [form, setForm] = useState({
+    username: "",
+    role_id: 2,
+  });
 
   useEffect(() => {
     loadUsers();
@@ -39,15 +49,68 @@ const loadUsers = async () => {
       setDeletingId(null);
     }
   };
+  const handleEdit = (user) => {
+    setEditingUser(user);
 
-const filtered = users.filter((u) => {
+    setForm({
+      username: user.username,
+      role_id: user.role_id,
+    });
+
+    setShowModal(true);
+};
+const handleChange = (e) => {
+  setForm({
+    ...form,
+    [e.target.name]:
+      e.target.name === "role_id"
+        ? Number(e.target.value)
+        : e.target.value,
+  });
+};
+
+const handleUpdate = async () => {
+  if (!form.username.trim()) {
+    alert("Username is required");
+    return;
+  }
+
+  try {
+    setSaving(true);
+
+    await userService.updateUser(editingUser.user_id, form);
+
+    setShowModal(false);
+    setEditingUser(null);
+
+    loadUsers();
+
+    alert("User updated successfully ✅");
+
+  } catch (err) {
+    alert(err.message);
+  } finally {
+    setSaving(false);
+  }
+};
+
+  const roleLabel = (role_id) => {
+    if (role_id === 1) return "admin";
+    if (role_id === 2) return "student";
+    if (role_id === 3) return "super admin";
+    return "";
+  };
+
+  const filtered = users.filter((u) => {
   const keyword = search.toLowerCase().trim();
+
+
 
   return (
     (u.username || "").toLowerCase().includes(keyword) ||
     (u.email || "").toLowerCase().includes(keyword) ||
     String(u.user_id).includes(keyword) ||
-    (u.role_id === 1 ? "super admin" : "admin").includes(keyword)
+    roleLabel(u.role_id).includes(keyword)
   );
 });
 
@@ -96,7 +159,7 @@ const filtered = users.filter((u) => {
                 <th style={styles.th}>User</th>
                 <th style={styles.th}>Email</th>
                 <th style={styles.th}>Role</th>
-                <th style={styles.th}>Action</th>
+                {user?.role_id === 3 && (<th style={styles.th}>Action</th>)}
               </tr>
             </thead>
 
@@ -129,11 +192,28 @@ const filtered = users.filter((u) => {
                     <span style={styles.email}>{u.email}</span>
                   </td>
                   <td style={styles.td}>
-                    <span style={styles.roleBadge(u.role_id === 1)}>
-                      {u.role_id === 1 ? "Super Admin" : "Admin"}
+                    <span style={styles.roleBadge(u.role_id === 3)}>
+                      {u.role_id === 3 ? "Super Admin" : u.role_id === 1 ? "Admin" : "Student"}
                     </span>
                   </td>
                   <td style={styles.td}>
+                    {user?.role_id === 3 && (
+                    <button
+                      onClick={() => handleEdit(u)}
+                      style={{
+                        padding: "8px 12px",
+                        marginRight: 8,
+                        background: "#F59E0B",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Edit
+                    </button>
+                    )}
+                    {user?.role_id === 3 && (
                     <button
                       onClick={() => handleDelete(u.user_id)}
                       disabled={deletingId === u.user_id}
@@ -144,6 +224,7 @@ const filtered = users.filter((u) => {
                     >
                       {deletingId === u.user_id ? "Deleting..." : "Delete"}
                     </button>
+                  )}
                   </td>
                 </tr>
               ))}
@@ -151,6 +232,84 @@ const filtered = users.filter((u) => {
           </table>
         )}
       </div>
+      {showModal && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        width: 400,
+        background: "#fff",
+        borderRadius: 12,
+        padding: 24,
+      }}
+    >
+      <h2>Edit User</h2>
+
+      <label>Username</label>
+
+      <input
+        name="username"
+        value={form.username}
+        onChange={handleChange}
+        style={{
+          width: "100%",
+          padding: 10,
+          marginTop: 8,
+          marginBottom: 15,
+        }}
+      />
+
+      <label>Role</label>
+
+      <select
+        name="role_id"
+        value={form.role_id}
+        onChange={handleChange}
+        style={{
+          width: "100%",
+          padding: 10,
+          marginTop: 8,
+          marginBottom: 20,
+        }}
+      >
+        <option value={1}>Admin</option>
+        <option value={2}>Student</option>
+        <option value={3}>Super Admin</option>
+      </select>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <button
+          onClick={() => {
+            setShowModal(false);
+            setEditingUser(null);
+          }}
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={handleUpdate}
+          disabled={saving}
+        >
+          {saving ? "Updating..." : "Update"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
     </AdminLayout>
   );
 }
