@@ -1,0 +1,109 @@
+// activityLogsStyles.js — matches the navy/indigo AhGib admin theme
+
+export const styles = {
+  headerRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "16px",
+    marginBottom: "28px",
+  },
+
+  headerIcon: {
+    width: "48px",
+    height: "48px",
+    borderRadius: "14px",
+    background: "linear-gradient(135deg, #4F46E5, #6366F1)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "22px",
+    flexShrink: 0,
+  },
+
+  pageTitle: {
+    fontSize: "26px",
+    fontWeight: "700",
+    color: "#F9FAFB",
+    margin: 0,
+    marginBottom: "4px",
+  },
+
+  subtitle: {
+    color: "#9CA3AF",
+    fontSize: "15px",
+    margin: 0,
+  },
+
+  loadingText: {
+    color: "#E5E7EB",
+    fontSize: "15px",
+  },
+
+  errorText: {
+    color: "#FCA5A5",
+    fontSize: "15px",
+    background: "#4C0519",
+    padding: "12px 16px",
+    borderRadius: "10px",
+    border: "1px solid #7F1D1D",
+  },
+
+  tableWrap: {
+    background: "#1E2333",
+    borderRadius: "18px",
+    border: "1px solid #2B3245",
+    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
+    overflow: "hidden",
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+  },
+
+  th: {
+    textAlign: "left",
+    padding: "16px 20px",
+    fontSize: "13px",
+    fontWeight: "700",
+    color: "#9CA3AF",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+    borderBottom: "1px solid #2B3245",
+    background: "#171B2B",
+  },
+
+  row: {
+    borderBottom: "1px solid #2B3245",
+  },
+
+  td: {
+    padding: "14px 20px",
+    fontSize: "14.5px",
+    color: "#E5E7EB",
+  },
+
+  tdMuted: {
+    padding: "14px 20px",
+    fontSize: "13px",
+    color: "#9CA3AF",
+  },
+
+  emptyCell: {
+    padding: "24px 20px",
+    fontSize: "14px",
+    color: "#6B7280",
+    textAlign: "center",
+  },
+
+  actionBadge: (color) => ({
+    display: "inline-block",
+    fontSize: "12px",
+    fontWeight: "700",
+    padding: "4px 12px",
+    borderRadius: "20px",
+    background: `${color}26`,
+    color: color,
+    textTransform: "capitalize",
+  }),
+};

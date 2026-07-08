@@ -11,6 +11,8 @@ import Questions from "../pages/admin/Questions";
 import ProtectedRoute from "./ProtectedRoute";
 import Unauthorized from "../pages/Unauthorized";
 import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
+import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
+import ActivityLogs from "../pages/admin/ActivityLogs";
 
 export default function AppRoutes() {
   return (
@@ -29,6 +31,8 @@ export default function AppRoutes() {
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/dashboard" element={ <ProtectedRoute allowedRoles={[1,3]}> <AdminDashboard /> </ProtectedRoute>}/>
         <Route path="/admin/super-users" element={<ProtectedRoute allowedRoles={[3]}><SuperAdminUsers /></ProtectedRoute>}/>
+        <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
+        <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
 
 
       </Routes>

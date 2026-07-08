@@ -44,15 +44,27 @@ export default function Sidebar() {
             </NavLink>
           </>
         )}
+      {isSuperAdmin && (
+        <>
+            <NavLink to="/admin/super" style={menuStyle}>
+                🛡️ Super Admin
+            </NavLink>
+            <NavLink to="/admin/activity" style={menuStyle}>
+                📜 Activity Logs
+            </NavLink>
+            
+            {/** Is page SuperadminUser */}
+            <NavLink to="/admin/super-users" style={menuStyle}>
+              <span>🛡️</span> User Management 
+            </NavLink> 
+        </>
+)}
 
       
 
-        {user?.role_id === 3 && (
-         <NavLink to="/admin/super-users" style={menuStyle}>
-          <span>🛡️</span> Super Admin Panel
-        </NavLink>  
-        )}
+
         </div>
+
       </div>
 
       {/* Bottom */}
