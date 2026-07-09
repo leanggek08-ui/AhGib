@@ -13,6 +13,7 @@ import Unauthorized from "../pages/Unauthorized";
 import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
 import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
+import AboutUs from "../pages/about/AboutUs";
 
 export default function AppRoutes() {
   return (
@@ -21,10 +22,12 @@ export default function AppRoutes() {
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route path="/login" element={<Login />} />
+        <Route  path="/about" element={<AboutUs />}/>
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={[1,2]}><Profile /></ProtectedRoute>}/>
         <Route path="/profile/edit" element={<EditProfile />} />
+        <Route  path="/about" element={<AboutUs />}/>
         <Route path="/admin/dashboard" element={<AdminDashboard />}/>
         <Route path="/admin/users" element={ <ProtectedRoute allowedRoles={[1,3]}> <Users /></ProtectedRoute> }/>
         <Route path="/admin/questions" element={ <ProtectedRoute allowedRoles={[1,3]}>  <Questions /></ProtectedRoute>}/>
