@@ -46,6 +46,27 @@ export default function Sidebar() {
             <NavLink to="/admin/universities" style={menuStyle}>
             🎓 Universities
             </NavLink>
+            <NavLink to="/admin/majors" style={menuStyle}>
+          📚 Majors
+          </NavLink>
+      
+          <NavLink to="/admin/careers" style={menuStyle}>
+        💼 Careers
+          </NavLink>
+
+          <NavLink to="/admin/university-majors"style={menuStyle}>
+            🎓 University Majors
+          </NavLink>
+
+          <NavLink to="/admin/career-skills" style={menuStyle}> 
+          🛠 Career Skills
+          </NavLink>
+           <NavLink to="/admin/major-careers" style={menuStyle}> 
+          🔑 University Major
+          </NavLink>
+
+
+
           </>
         )}
       {isSuperAdmin && (

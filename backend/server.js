@@ -10,6 +10,11 @@ import userRoutes from "./routes/user.js";
 import adminRoutes from "./routes/admin.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import universityRoutes from "./routes/universityRoutes.js";
+import majorRoutes from "./routes/majorRoutes.js";
+import careerRoutes from "./routes/careerRoutes.js";
+import uniMajorRoutes from "./routes/uniMajorRoutes.js";
+import careerSkillRoutes from "./routes/careerSkillRoutes.js";
+import majorCareerRoutes from "./routes/majorCareerRoutes.js";
 import dotenv from "dotenv";
 import pool from "./db/db.js";
 const app = express();
@@ -24,11 +29,17 @@ app.use("/auth", authRoutes);
 app.use("/assessments", assessmentRoutes);
 app.use("/questions", questionRoutes);
 app.use("/universities", universityRoutes);
+app.use("/major", majorRoutes);
+app.use("/career", careerRoutes);
 app.use("/answers", answerRoutes);
 app.use("/score", scoreRoutes);
 app.use("/users", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/dashboard", dashboardRoutes);
+app.use("/uni-major", uniMajorRoutes);
+app.use( "/career-skill", careerSkillRoutes);
+app.use("/major-career", majorCareerRoutes);
+
 
 
 // test route

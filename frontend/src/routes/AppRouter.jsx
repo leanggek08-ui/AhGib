@@ -15,6 +15,11 @@ import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
 import AboutUs from "../pages/about/AboutUs";
 import AdminUniversities from "../pages/admin/AdminUniversities";
+import AdminMajors from "../pages/admin/AdminMajors";
+import AdminCareers from "../pages/admin/AdminCareers";
+import AdminUniversityMajors from "../pages/admin/AdminUniversityMajors";
+import AdminCareerSkills from "../pages/admin/AdminCareerSkills";
+import AdminMajorCareers from "../pages/admin/AdminMajorCareers";
 
 export default function AppRoutes() {
   return (
@@ -38,6 +43,11 @@ export default function AppRoutes() {
         <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
         <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
         <Route path="/admin/universities" element={<AdminUniversities/>}/>
+        <Route path="/admin/majors" element={<AdminMajors/>}/>
+        <Route path="/admin/careers" element={<AdminCareers />}/>
+        <Route path="/admin/university-majors" element={<AdminUniversityMajors/>}/>
+        <Route path="/admin/career-skills" element={<AdminCareerSkills />}/>
+        <Route  path="/admin/major-careers"  element={<AdminMajorCareers/>}/>
 
 
       </Routes>
