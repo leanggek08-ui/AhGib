@@ -42,6 +42,10 @@ export default function Sidebar() {
             <NavLink to="/admin/questions" style={menuStyle}>
               ❓ Questions
             </NavLink>
+
+            <NavLink to="/admin/universities" style={menuStyle}>
+            🎓 Universities
+            </NavLink>
           </>
         )}
       {isSuperAdmin && (

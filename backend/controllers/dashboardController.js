@@ -4,11 +4,12 @@ export async function getStats(req, res) {
   try {
     const users = await pool.query("SELECT COUNT(*) FROM users");
     const questions = await pool.query("SELECT COUNT(*) FROM questions");
+    const universities = await pool.query("SELECT COUNT(*) FROM universities");
 
     res.json({
       totalUsers: parseInt(users.rows[0].count),
       totalQuestions: parseInt(questions.rows[0].count),
-      totalUniversities: 0,
+      totalUniversities: parseInt(universities.rows[0].count),
     });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -14,6 +14,7 @@ import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
 import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
 import AboutUs from "../pages/about/AboutUs";
+import AdminUniversities from "../pages/admin/AdminUniversities";
 
 export default function AppRoutes() {
   return (
@@ -36,6 +37,7 @@ export default function AppRoutes() {
         <Route path="/admin/super-users" element={<ProtectedRoute allowedRoles={[3]}><SuperAdminUsers /></ProtectedRoute>}/>
         <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
         <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
+        <Route path="/admin/universities" element={<AdminUniversities/>}/>
 
 
       </Routes>
