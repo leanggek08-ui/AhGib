@@ -47,6 +47,12 @@ export default function Profile() {
  return (
   <div style={styles.page}>
     <div style={styles.card}>
+      <Link
+        to={user?.role_id === 1 || user?.role_id === 3 ? "/admind/dashboard" : "/student/dashboard"}
+        style={styles.backlink}
+      >
+        ← Back to Dashboard
+      </Link>
 
       {/* HEADER */}
       <div style={styles.header}>
