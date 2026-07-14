@@ -1,10 +1,13 @@
-require("dotenv").config();
-const express = require("express");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 const router = express.Router();
-const pool = require("../db/db");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const verifyToken = require("../middlewares/authMiddleware");
+import pool from "../db/db.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import verifyToken from "../middlewares/authMiddleware.js";
+
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // REGISTER
@@ -139,4 +142,4 @@ router.put("/profile", verifyToken, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

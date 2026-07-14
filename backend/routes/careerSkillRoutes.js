@@ -8,10 +8,7 @@ import {
 } from "../controllers/careerSkillController.js";
 
 
-import { authenticateToken } 
-from "../middlewares/authMiddleware.js";
-
-
+import authenticateToken from "../middlewares/authMiddleware.js";
 import { allowRoles } 
 from "../middlewares/roleMiddleware.js";
 

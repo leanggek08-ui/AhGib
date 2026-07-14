@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticateToken } from "../middlewares/authMiddleware.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
 import * as user from "../controllers/userController.js";
 import { allowRoles } from "../middlewares/roleMiddleware.js";
 

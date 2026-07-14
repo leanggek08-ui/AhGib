@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors"; // allow frontend (ex:port 3000) to talk to backend port 5000
 import authRoutes from "./routes/auth.js"; // connect auth route to server
-import { authenticateToken } from "./middlewares/authMiddleware.js";
+import authenticateToken from "./middlewares/authMiddleware.js";
 import questionRoutes from "./routes/question.js"; // connect queation to server
 import assessmentRoutes from "./routes/assessment.js"; 
 import answerRoutes from "./routes/answer.js";

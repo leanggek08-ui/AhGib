@@ -8,7 +8,7 @@ import {
   deleteUniversity,
 } from "../controllers/universityController.js";
 
-import { authenticateToken } from "../middlewares/authMiddleware.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
 import { allowRoles } from "../middlewares/roleMiddleware.js";
 
 const router = express.Router();

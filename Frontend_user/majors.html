@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Majors — AhGib</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/majors.css">
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="index.html" class="logo">
+      <svg class="mark" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="17" fill="#5313C0"/>
+        <path d="M10 22L15 10L19 18.5L24 10" stroke="#FFB648" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      AhGib
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#how-it-works">How it works</a></li>
+      <li><a href="careers.html">Career paths</a></li>
+      <li><a href="universities.html">Universities</a></li>
+      <li><a href="majors.html" class="active">Majors</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#" class="nav-signin">Sign in</a>
+      <a href="index.html#assessment" class="btn btn-primary">Start Free Assessment</a>
+    </div>
+    <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span>Majors</div>
+    <span class="eyebrow">30+ Majors Mapped To RIASEC Clusters</span>
+    <h1>Explore Majors For<br>Every Career Path</h1>
+    <p class="lead">See what each major actually involves, what careers it leads to, and how it lines up with your AhGib interest profile — before you commit to it.</p>
+
+    <div class="search-card">
+      <input type="text" id="searchInput" placeholder="Search a major, e.g. 'Computer Science'">
+      <select id="categorySelect">
+        <option value="all">All categories</option>
+        <option value="STEM">STEM &amp; Engineering</option>
+        <option value="Business">Business &amp; Economics</option>
+        <option value="Health">Health &amp; Medicine</option>
+        <option value="Design">Design &amp; Architecture</option>
+        <option value="Law">Law &amp; Public Affairs</option>
+        <option value="Agriculture">Agriculture</option>
+      </select>
+      <select id="riasecSelect">
+        <option value="all">All RIASEC types</option>
+        <option value="R">R — Realistic</option>
+        <option value="I">I — Investigative</option>
+        <option value="A">A — Artistic</option>
+        <option value="S">S — Social</option>
+        <option value="E">E — Enterprising</option>
+        <option value="C">C — Conventional</option>
+      </select>
+      <button class="btn btn-primary" id="searchBtn">Search</button>
+    </div>
+
+    <div class="chip-row">
+      <button class="chip active" data-cat="all">All Majors</button>
+      <button class="chip" data-cat="STEM">STEM</button>
+      <button class="chip" data-cat="Business">Business</button>
+      <button class="chip" data-cat="Health">Health</button>
+      <button class="chip" data-match="true">★ Best Match For You</button>
+    </div>
+
+    <div class="u-stats">
+      <div class="stat"><div class="num">30+</div><div class="lbl">Majors Covered</div></div>
+      <div class="stat"><div class="num">500+</div><div class="lbl">Programs Linked</div></div>
+      <div class="stat"><div class="num">6</div><div class="lbl">RIASEC Clusters</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="results-bar">
+      <div class="results-count"><b id="resultCount">9</b> majors found</div>
+      <div class="sort">
+        <select id="sortSelect">
+          <option value="match">Sort by: Best match</option>
+          <option value="name">Sort by: Name (A–Z)</option>
+          <option value="salary">Sort by: Avg. salary (high to low)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="m-grid" id="mGrid"></div>
+    <p id="loadingState" style="text-align:center; padding:60px 20px; color:#8B8FA3; font-size:14.5px;">Loading majors…</p>
+
+    <div class="empty-state" id="emptyState">
+      <h3>No majors match your filters</h3>
+      <p>Try widening your search or clearing a filter.</p>
+    </div>
+
+    <div class="u-cta">
+      <div>
+        <h3>Not sure which major fits you?</h3>
+        <p>Take the AhGib assessment and we'll rank majors by how well they match your interests and strengths.</p>
+      </div>
+      <a href="index.html#assessment" class="btn">Take the Assessment →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <a href="index.html" class="logo">
+      <svg class="mark" viewBox="0 0 34 34" fill="none">
+        <circle cx="17" cy="17" r="17" fill="#5313C0"/>
+        <path d="M10 22L15 10L19 18.5L24 10" stroke="#FFB648" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      </svg>
+      AhGib
+    </a>
+    <p class="tag">AI-powered career assessment helping Cambodian high school students find their path — and the major to get there.</p>
+    <div class="foot-bottom">
+      <span>© 2026 AhGib. All rights reserved.</span>
+      <span>Privacy policy · Terms</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/config.js"></script>
+<script>
+  const grid = document.getElementById('mGrid');
+  const loadingState = document.getElementById('loadingState');
+  const resultCount = document.getElementById('resultCount');
+  const emptyState = document.getElementById('emptyState');
+  const searchInput = document.getElementById('searchInput');
+  const categorySelect = document.getElementById('categorySelect');
+  const riasecSelect = document.getElementById('riasecSelect');
+  const sortSelect = document.getElementById('sortSelect');
+  const chips = document.querySelectorAll('.chip');
+
+  let activeCat = 'all';
+  let bestMatchOnly = false;
+  let cards = []; // populated once the grid is rendered from real/fallback data
+
+  // Used only if GET /api/majors can't be reached, so this page still
+  // works as a live demo. Delete this once the API is solid.
+  const FALLBACK_DATA = [
+    { name:"Computer Science", icon:"💻", category:"STEM", riasec:"I", desc:"Programming, algorithms, and software systems — the foundation behind apps, websites, and AI.", tags:["Software Engineer","Data Analyst","AI Engineer"], salary_min:700, salary_max:1200, match:94 },
+    { name:"Business Administration", icon:"📊", category:"Business", riasec:"E", desc:"Management, marketing, and finance fundamentals for running or growing an organization.", tags:["Marketing Manager","Entrepreneur","HR Manager"], salary_min:450, salary_max:900, match:81 },
+    { name:"Medicine", icon:"🩺", category:"Health", riasec:"S", desc:"A long, rigorous path to becoming a doctor — diagnosing and treating patients across specialties.", tags:["Doctor","Surgeon","Public Health"], salary_min:800, salary_max:2000, match:72 },
+    { name:"Civil Engineering", icon:"🏗️", category:"STEM", riasec:"R", desc:"Designing and building roads, bridges, and buildings — hands-on work with real infrastructure.", tags:["Structural Engineer","Site Manager","Urban Planner"], salary_min:500, salary_max:1000, match:68 },
+    { name:"Law", icon:"⚖️", category:"Law", riasec:"E", desc:"Legal theory, contracts, and civil procedure — a path toward legal practice or public policy.", tags:["Lawyer","Legal Advisor","Policy Analyst"], salary_min:400, salary_max:900, match:59 },
+    { name:"Graphic Design", icon:"🎨", category:"Design", riasec:"A", desc:"Visual storytelling — branding, layout, and digital design for products, ads, and media.", tags:["UI/UX Designer","Brand Designer","Illustrator"], salary_min:350, salary_max:800, match:90 },
+    { name:"Architecture", icon:"📐", category:"Design", riasec:"A", desc:"Designing buildings and spaces — a blend of creative vision and structural know-how.", tags:["Architect","Interior Designer","Urban Designer"], salary_min:500, salary_max:1100, match:65 },
+    { name:"Agronomy", icon:"🌾", category:"Agriculture", riasec:"R", desc:"Crop science and land management — vital work for Cambodia's agricultural economy.", tags:["Agronomist","Farm Manager","Food Scientist"], salary_min:300, salary_max:650, match:55 },
+    { name:"Nursing", icon:"💉", category:"Health", riasec:"S", desc:"Patient care and clinical support — a faster path into healthcare with steady demand.", tags:["Registered Nurse","Clinical Officer","Midwife"], salary_min:350, salary_max:700, match:78 }
+  ];
+
+  const RIASEC_LABEL = { R:"Realistic", I:"Investigative", A:"Artistic", S:"Social", E:"Enterprising", C:"Conventional" };
+
+  // Builds one .m-card from a major record. Works for both API rows and
+  // FALLBACK_DATA as long as they share these field names — match your
+  // /api/majors response shape to this, or adjust here.
+  function cardHTML(m){
+    return `
+      <div class="m-card" data-cat="${m.category}" data-riasec="${m.riasec}" data-match="${m.match}" data-salary="${m.salary_max}" data-name="${m.name}">
+        <div class="m-top">
+          <div class="m-mark">${m.icon}</div>
+          <span class="m-riasec">${m.riasec} — ${RIASEC_LABEL[m.riasec]}</span>
+        </div>
+        <div class="m-name">${m.name}</div>
+        <p class="m-desc">${m.desc}</p>
+        <div class="m-tags">
+          ${m.tags.map(t => `<span class="m-tag">${t}</span>`).join('')}
+        </div>
+        <div class="m-meta">
+          <div class="salary">Avg. salary/mo<br><b>$${m.salary_min.toLocaleString()}–$${m.salary_max.toLocaleString()}</b></div>
+          <div class="m-match"><span class="ring"></span>${m.match}% match</div>
+        </div>
+        <a href="universities.html" class="m-view">See universities offering this <svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+      </div>`;
+  }
+
+  async function loadMajors(){
+    let data;
+    try {
+      const res = await fetch(`${API_BASE}/majors`);
+      if (!res.ok) throw new Error(`API responded ${res.status}`);
+      data = await res.json();
+    } catch (err) {
+      console.warn('Could not reach /api/majors — showing sample data instead.', err);
+      data = FALLBACK_DATA;
+    }
+    loadingState.style.display = 'none';
+    grid.innerHTML = data.map(cardHTML).join('');
+    cards = Array.from(grid.querySelectorAll('.m-card'));
+    applyFilters();
+  }
+
+  function applyFilters(){
+    const q = searchInput.value.trim().toLowerCase();
+    const cat = categorySelect.value;
+    const riasec = riasecSelect.value;
+    let visible = 0;
+
+    cards.forEach(card=>{
+      const name = card.dataset.name.toLowerCase();
+      const matchesQuery = !q || name.includes(q);
+      const matchesCat = activeCat === 'all' || card.dataset.cat === activeCat;
+      const matchesCatSelect = cat === 'all' || card.dataset.cat === cat;
+      const matchesRiasec = riasec === 'all' || card.dataset.riasec === riasec;
+      const matchesBest = !bestMatchOnly || parseInt(card.dataset.match) >= 80;
+
+      const show = matchesQuery && matchesCat && matchesCatSelect && matchesRiasec && matchesBest;
+      card.dataset.hidden = show ? "false" : "true";
+      if(show) visible++;
+    });
+
+    resultCount.textContent = visible;
+    emptyState.classList.toggle('show', visible === 0);
+    sortCards();
+  }
+
+  function sortCards(){
+    const mode = sortSelect.value;
+    const sorted = cards.slice().sort((a,b)=>{
+      if(mode === 'name') return a.dataset.name.localeCompare(b.dataset.name);
+      if(mode === 'salary') return parseInt(b.dataset.salary) - parseInt(a.dataset.salary);
+      return parseInt(b.dataset.match) - parseInt(a.dataset.match);
+    });
+    sorted.forEach(c=>grid.appendChild(c));
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  categorySelect.addEventListener('change', applyFilters);
+  riasecSelect.addEventListener('change', applyFilters);
+  sortSelect.addEventListener('change', applyFilters);
+  document.getElementById('searchBtn').addEventListener('click', applyFilters);
+
+  chips.forEach(chip=>{
+    chip.addEventListener('click', ()=>{
+      if(chip.dataset.match){
+        bestMatchOnly = !bestMatchOnly;
+        chip.classList.toggle('active', bestMatchOnly);
+      } else {
+        chips.forEach(c=>{ if(!c.dataset.match) c.classList.remove('active'); });
+        chip.classList.add('active');
+        activeCat = chip.dataset.cat;
+      }
+      applyFilters();
+    });
+  });
+
+  const burger = document.querySelector('.burger');
+  const links = document.querySelector('.nav-links');
+  burger.addEventListener('click', ()=>{
+    links.style.display = links.style.display === 'flex' ? 'none' : 'flex';
+    links.style.cssText += 'position:absolute; top:78px; left:0; right:0; background:#fff; flex-direction:column; padding:20px 32px; box-shadow:0 12px 24px -12px rgba(0,0,0,.15); gap:18px; z-index:60;';
+  });
+
+  loadMajors();
+</script>
+
+</body>
+</html>

@@ -16,13 +16,11 @@ import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
 import AboutUs from "../pages/about/AboutUs";
 import AdminUniversities from "../pages/admin/AdminUniversities";
-<<<<<<< Updated upstream
 import AdminMajors from "../pages/admin/AdminMajors";
 import AdminCareers from "../pages/admin/AdminCareers";
 import AdminUniversityMajors from "../pages/admin/AdminUniversityMajors";
 import AdminCareerSkills from "../pages/admin/AdminCareerSkills";
 import AdminMajorCareers from "../pages/admin/AdminMajorCareers";
-=======
 import Universities from "../pages/student/Universities";
 import StudentDashboard from "../pages/student/StudentDashboard";
 import Careers from "../pages/student/Careers";
@@ -46,7 +44,6 @@ function ScrollToHash() {
 
   return null;
 }
->>>>>>> Stashed changes
 
 export default function AppRoutes() {
   return (
@@ -71,18 +68,15 @@ export default function AppRoutes() {
         <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
         <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
         <Route path="/admin/universities" element={<AdminUniversities/>}/>
-<<<<<<< Updated upstream
         <Route path="/admin/majors" element={<AdminMajors/>}/>
         <Route path="/admin/careers" element={<AdminCareers />}/>
         <Route path="/admin/university-majors" element={<AdminUniversityMajors/>}/>
         <Route path="/admin/career-skills" element={<AdminCareerSkills />}/>
         <Route  path="/admin/major-careers"  element={<AdminMajorCareers/>}/>
-=======
-        <Route path="/universities" element={<ProtectedRoute allowedRoles={[1, 2, 3]}><Universities /></ProtectedRoute>}/>
-        <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={[1, 2, 3]}><StudentDashboard /></ProtectedRoute>}/>
-        <Route path="/careers" element={<ProtectedRoute allowedRoles={[1, 2, 3]}><Careers /></ProtectedRoute>}/>
-        <Route path="/majors" element={<ProtectedRoute allowedRoles={[1, 2, 3]}><Majors /></ProtectedRoute>}/>
->>>>>>> Stashed changes
+        <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={[2]}><StudentDashboard /></ProtectedRoute>}/>
+        <Route path="/student/universities" element={<ProtectedRoute allowedRoles={[2]}><Universities /></ProtectedRoute>}/>
+        <Route path="/student/careers" element={<ProtectedRoute allowedRoles={[2]}><Careers /></ProtectedRoute>}/>
+        <Route path="/student/majors" element={<ProtectedRoute allowedRoles={[2]}><Majors /></ProtectedRoute>}/>
 
 
       </Routes>
