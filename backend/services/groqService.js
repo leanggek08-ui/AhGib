@@ -1,5 +1,6 @@
 const GROQ_API_URL =
   process.env.GROQ_API_URL || "https://api.groq.com/openai/v1/chat/completions";
+
 const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
 
 function getJsonContent(content) {
@@ -9,6 +10,7 @@ function getJsonContent(content) {
 
   const trimmed = content.trim();
   const fencedMatch = trimmed.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/i);
+
   const jsonText = fencedMatch ? fencedMatch[1].trim() : trimmed;
 
   return JSON.parse(jsonText);
@@ -19,10 +21,6 @@ async function callGroq(messages, responseFormat) {
 
   if (!apiKey) {
     throw new Error("GROQ_API_KEY is not configured");
-  }
-
-  if (typeof fetch !== "function") {
-    throw new Error("Global fetch is not available in this Node runtime");
   }
 
   const requestBody = {
@@ -68,11 +66,16 @@ async function generateCareerRecommendation(studentProfile) {
     },
     {
       role: "user",
-      content: `Based on this student profile, recommend suitable careers, university majors, required skills, and future opportunities.\n\n${JSON.stringify(studentProfile, null, 2)}`,
+      content: `Based on this student profile, recommend suitable careers, university majors, required skills, and future opportunities.
+
+${JSON.stringify(studentProfile, null, 2)}`,
     },
   ];
 
-  const completion = await callGroq(messages, { type: "json_object" });
+  const completion = await callGroq(messages, {
+    type: "json_object",
+  });
+
   const content = completion?.choices?.[0]?.message?.content || "{}";
 
   return getJsonContent(content);
@@ -91,7 +94,4 @@ async function chatWithCareerAdvisor(messages) {
   return completion?.choices?.[0]?.message?.content || "";
 }
 
-module.exports = {
-  generateCareerRecommendation,
-  chatWithCareerAdvisor,
-};
+export { generateCareerRecommendation, chatWithCareerAdvisor };

@@ -1,5 +1,8 @@
-const { Pool } = require("pg"); // for node.js talk to a PostgreSQL 
-require("dotenv").config(); // loads .env
+import dotenv from "dotenv";
+import pg from "pg";
+
+const { Pool } = pg; // for node.js talk to a PostgreSQL
+dotenv.config(); // loads .env
 
 const pool = new Pool({
   user: process.env.DB_USER,
@@ -9,4 +12,4 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
-module.exports = pool;
+export default pool;

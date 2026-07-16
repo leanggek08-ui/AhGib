@@ -1,4 +1,4 @@
-const pool = require("../db/db");
+import pool from "../db/db.js";
 
 async function calculateScore(ass_id) {
   try {
@@ -43,4 +43,4 @@ async function calculateScore(ass_id) {
   }
 }
 
-module.exports = calculateScore;
+export default calculateScore;

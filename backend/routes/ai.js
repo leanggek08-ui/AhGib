@@ -1,51 +1,35 @@
-const express = require("express");
+import express from "express";
+import { chatWithCareerAdvisor } from "../services/groqService.js";
+
 const router = express.Router();
-const authenticateToken = require("../middlewares/authMiddleware");
-const {
-  generateCareerRecommendation,
-  chatWithCareerAdvisor,
-} = require("../services/groqService");
 
-router.post("/recommendation", authenticateToken, async (req, res) => {
-  try {
-    const studentProfile = req.body;
-    const studentProfile = req.body;
+router.post("/", async (req, res) => {
+  const message = typeof req.body?.message === "string"
+    ? req.body.message.trim()
+    : "";
 
-    if (!studentProfile || typeof studentProfile !== "object") {
-      return res.status(400).json({ message: "studentProfile is required" });
-    }
-
-    const recommendation = await generateCareerRecommendation(studentProfile);
-
-    res.json({
-      message: "Career recommendation generated successfully",
-      data: recommendation,
+  if (!message) {
+    return res.status(400).json({
+      error: "message is required and must be a non-empty string",
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  }
+
+  try {
+    const reply = await chatWithCareerAdvisor([
+      { role: "user", content: message },
+    ]);
+
+    return res.json({ reply });
+  } catch (error) {
+    console.error("AI chat error:", error);
+
+    const configurationError = error.message.includes("GROQ_API_KEY");
+    return res.status(configurationError ? 503 : 502).json({
+      error: configurationError
+        ? "AI service is not configured"
+        : "AI service is temporarily unavailable",
+    });
   }
 });
 
-router.post("/chat", authenticateToken, async (req, res) => {
-  try {
-    const { messages } = req.body;
-    const { messages } = req.body;
-
-    if (!Array.isArray(messages) || messages.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "messages must be a non-empty array" });
-    }
-
-    const reply = await chatWithCareerAdvisor(messages);
-
-    res.json({
-      message: "Chat response generated successfully",
-      reply,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-module.exports = router;
+export default router;

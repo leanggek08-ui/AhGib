@@ -1,0 +1,19 @@
+Analyze the entire backend project.
+
+This project was partially converted from CommonJS to ES Modules and is currently broken.
+
+Tasks:
+1. Convert every require() to import.
+2. Convert every module.exports to export default or named exports.
+3. Add .js extensions to every local import.
+4. Fix every import/export mismatch.
+5. Fix duplicate declarations.
+6. Ensure Express routers export default router.
+7. Ensure middleware exports are consistent.
+8. Ensure db/db.js exports the PostgreSQL pool correctly.
+9. Ensure utils export correctly.
+10. Ensure services export correctly.
+11. Do NOT change any business logic.
+12. Fix every file until npm start runs successfully.
+
+After making changes, run through the entire project again to ensure there are no remaining CommonJS files.

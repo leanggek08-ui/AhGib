@@ -1,0 +1,13 @@
+{
+  "name": "ahgib-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dist",
+    "preview": "vite preview dist"
+  },
+  "devDependencies": {
+    "vite": "^8.1.0"
+  }
+}

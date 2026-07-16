@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import pool from "../db/db.js";
+
 const router = express.Router();
-const pool = require("../db/db");
 
 // CREATE question (Admin)
 router.post("/", async (req, res) => {
@@ -53,4 +54,4 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
