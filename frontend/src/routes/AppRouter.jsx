@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+=======
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+>>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
 
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
@@ -14,6 +18,7 @@ import Unauthorized from "../pages/Unauthorized";
 import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
 import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
+<<<<<<< HEAD
 import AboutUs from "../pages/student/AboutUs";
 import StudentAboutUs from "../pages/student/AboutUs";
 import AdminUniversities from "../pages/admin/AdminUniversities";
@@ -44,11 +49,18 @@ function ScrollToHash() {
 
   return null;
 }
+=======
+import AboutUs from "../pages/about/AboutUs";
+import AdminUniversities from "../pages/admin/AdminUniversities";
+>>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
 
 export default function AppRoutes() {
   return (
     <BrowserRouter>
+<<<<<<< HEAD
       <ScrollToHash />
+=======
+>>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
 
@@ -68,6 +80,7 @@ export default function AppRoutes() {
         <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
         <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
         <Route path="/admin/universities" element={<AdminUniversities/>}/>
+<<<<<<< HEAD
         <Route path="/admin/majors" element={<AdminMajors/>}/>
         <Route path="/admin/careers" element={<AdminCareers />}/>
         <Route path="/admin/university-majors" element={<AdminUniversityMajors/>}/>
@@ -84,6 +97,9 @@ export default function AppRoutes() {
 
         {/* Anything else: show something instead of a silent blank page */}
         <Route path="*" element={<Navigate to="/unauthorized" replace />} />
+=======
+
+>>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
 
       </Routes>
     </BrowserRouter>
