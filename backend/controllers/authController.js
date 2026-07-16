@@ -45,7 +45,7 @@ export async function login(req, res) {
       return res.status(400).json({ message: "User not found" });
     }
 
-    const user = userResult.rows[0]; // ⭐ FIX HERE
+    const user = userResult.rows[0]; 
 
     const valid = await bcrypt.compare(password, user.password);
 
@@ -53,7 +53,7 @@ export async function login(req, res) {
       return res.status(401).json({ message: "Invalid password" });
     }
 
-    // ⭐ FIX JWT
+    //   JWT
     const token = jwt.sign(
       {
         user_id: user.user_id,
