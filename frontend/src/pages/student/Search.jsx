@@ -6,6 +6,7 @@ import { majorService } from "../../services/majorService";
 import { uniMajorService } from "../../services/uniMajorService";
 import { careerService } from "../../services/careerService";
 import { majorCareerService } from "../../services/majorCareerService";
+import { getUniversityImage } from "../../assets/universityImages";
 import { styles } from "../../styles/studentSearchStyles";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
@@ -155,29 +156,49 @@ export default function Search() {
                 <div style={styles.grid}>
                   {filteredUniversities.map((u) => {
                     const uniMajorNames = majorsForUniversity(u.university_id);
+                    const photo = getUniversityImage(u.name);
                     return (
                       <div key={u.university_id} style={styles.card}>
-                        <div style={styles.cardTopRow}>
-                          <div style={styles.iconBox}>🎓</div>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={styles.cardTitle}>{u.name}</div>
-                            <div style={styles.cardMeta}>
-                              📍 {u.location || "Location not listed"}
-                            </div>
-                          </div>
+                        <div style={styles.cardImageWrap}>
+                          {photo ? (
+                            <img src={photo} alt={u.name} style={styles.cardImage} />
+                          ) : (
+                            <div style={styles.cardImagePlaceholder}>🎓</div>
+                          )}
                           {hasTypeField && (
-                            <span style={styles.badge(u.type)}>{u.type}</span>
+                            <span style={styles.badgeOverlay(u.type)}>{u.type}</span>
                           )}
                         </div>
-                        {uniMajorNames.length > 0 && (
-                          <div style={styles.tagRow}>
-                            {uniMajorNames.slice(0, 3).map((name) => (
-                              <span key={name} style={styles.tag}>
-                                {name}
-                              </span>
-                            ))}
+
+                        <div style={styles.cardPadded}>
+                          <div style={styles.cardTitle}>{u.name}</div>
+                          <div style={styles.cardMeta}>
+                            📍 {u.location || "Location not listed"}
                           </div>
-                        )}
+
+                          {uniMajorNames.length > 0 && (
+                            <div style={{ ...styles.tagRow, marginTop: "10px" }}>
+                              {uniMajorNames.slice(0, 3).map((name) => (
+                                <span key={name} style={styles.tag}>
+                                  {name}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {u.website && (
+                            <div style={{ marginTop: "10px" }}>
+                              <a
+                                href={u.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={styles.websiteLink}
+                              >
+                                🔗 Visit website
+                              </a>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -193,7 +214,7 @@ export default function Search() {
               ) : (
                 <div style={styles.grid}>
                   {filteredMajors.map((m) => (
-                    <div key={m.major_id} style={styles.card}>
+                    <div key={m.major_id} style={{ ...styles.card, ...styles.cardPadded }}>
                       <div style={styles.iconBox}>📖</div>
                       <div style={{ ...styles.cardTitle, margin: "12px 0 10px" }}>
                         {m.major_name}

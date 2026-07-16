@@ -12,6 +12,7 @@ import {
   assessmentService,
   LIKERT_OPTIONS,
 } from "../../services/assessmentService";
+import { getUniversityImage } from "../../assets/universityImages";
 import { styles } from "../../styles/studentFeaturesStyles";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
@@ -280,44 +281,54 @@ function UniversitySearchPanel() {
         <div style={styles.grid}>
           {filtered.map((u) => {
             const uniMajorIds = majorIdsForUniversity(u.university_id);
+            const photo = getUniversityImage(u.name);
             return (
               <div key={u.university_id} style={styles.card}>
-                <div style={styles.cardTop}>
-                  <div style={styles.cardIcon}>🎓</div>
-                  <div>
-                    <div style={styles.cardName}>{u.name}</div>
-                    <div style={styles.cardMeta}>
-                      📍 {u.location || "Location not listed"}
-                    </div>
-                  </div>
+                <div style={styles.cardImageWrap}>
+                  {photo ? (
+                    <img src={photo} alt={u.name} style={styles.cardImage} />
+                  ) : (
+                    <div style={styles.cardImagePlaceholder}>🎓</div>
+                  )}
                 </div>
 
-                <div style={styles.cardDivider} />
-
-                {uniMajorIds.length === 0 ? (
-                  <span style={styles.cardMeta}>No majors listed yet</span>
-                ) : (
-                  <div style={styles.tagRow}>
-                    {uniMajorIds.slice(0, 5).map((mid) => (
-                      <span key={mid} style={styles.tag}>
-                        {majorName(mid)}
-                      </span>
-                    ))}
+                <div style={styles.cardPadded}>
+                  <div style={styles.cardTop}>
+                    <div>
+                      <div style={styles.cardName}>{u.name}</div>
+                      <div style={styles.cardMeta}>
+                        📍 {u.location || "Location not listed"}
+                      </div>
+                    </div>
                   </div>
-                )}
 
-                {u.website && (
-                  <div style={{ marginTop: "12px" }}>
-                    <a
-                      href={u.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ ...styles.matchReason, color: "#5313c0" }}
-                    >
-                      🔗 Visit website
-                    </a>
-                  </div>
-                )}
+                  <div style={styles.cardDivider} />
+
+               {uniMajorIds.length === 0 ? (
+                    <span style={styles.cardMeta}>No majors listed yet</span>
+                  ) : (
+                    <div style={styles.tagRow}>
+                      {uniMajorIds.slice(0, 5).map((mid) => (
+                        <span key={mid} style={styles.tag}>
+                          {majorName(mid)}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {u.website && (
+                    <div style={{ marginTop: "12px" }}>
+                      <a
+                        href={u.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ ...styles.matchReason, color: "#5313c0" }}
+                      >
+                        🔗 Visit website
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

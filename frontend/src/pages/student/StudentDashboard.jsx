@@ -88,6 +88,16 @@ export default function StudentDashboard() {
 
   return (
     <StudentLayout>
+      <style>{`
+        .benefit-card {
+          transition: all 0.2s ease;
+        }
+        .benefit-card:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 16px 32px -12px rgba(83,19,192,.18);
+          border-color: #C4B5FD;
+        }
+      `}</style>
       {/* ===== Hero ===== */}
       <section style={styles.hero}>
         <div style={styles.heroBlob1} />
@@ -229,7 +239,7 @@ export default function StudentDashboard() {
 
         <div style={styles.benefitsGrid}>
           {benefits.map((b) => (
-            <div key={b.title} style={styles.benefitCard}>
+            <div key={b.title} style={styles.benefitCard} className="benefit-card">
               <div style={styles.benefitIconWrap(b.bg)}>{b.icon}</div>
               <div style={styles.benefitTitle}>{b.title}</div>
               <p style={styles.benefitDesc}>{b.desc}</p>
@@ -252,7 +262,7 @@ export default function StudentDashboard() {
 
           <div style={styles.stepsGrid}>
             {steps.map((s) => (
-              <div key={s.num} style={styles.stepCard}>
+              <div key={s.num} style={styles.stepCard} className="benefit-card">
                 <span style={styles.stepNum}>{s.num}</span>
                 <div style={styles.stepTitle}>{s.title}</div>
                 <p style={styles.stepDesc}>{s.desc}</p>
@@ -289,7 +299,7 @@ export default function StudentDashboard() {
       </section>
 
       {/* ===== CTA ===== */}
-      <section style={styles.ctaWrap}>
+      <section style={{ ...styles.ctaWrap, marginBottom: "-40px"}}>
         <h2 style={styles.ctaTitle}>Ready to discover your future?</h2>
         <p style={styles.ctaText}>
           Join thousands of students who have already found their career

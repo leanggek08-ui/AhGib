@@ -144,10 +144,51 @@ export const styles = {
   card: {
     background: "#FFFFFF",
     borderRadius: "18px",
-    padding: "20px",
     border: "1px solid #F1F3F5",
+    overflow: "hidden",
     transition: "all .18s ease",
   },
+
+  cardPadded: {
+    padding: "20px",
+  },
+
+  cardImageWrap: {
+    position: "relative",
+    width: "100%",
+    aspectRatio: "16 / 9",
+    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    overflow: "hidden",
+  },
+
+  cardImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+
+  cardImagePlaceholder: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "34px",
+  },
+
+  badgeOverlay: (variant) => ({
+    position: "absolute",
+    top: "12px",
+    left: "12px",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "11px",
+    fontWeight: "700",
+    padding: "5px 13px",
+    borderRadius: "999px",
+    background: variant === "Public" ? "#FFFFFF" : "#EDE8F8",
+    color: variant === "Public" ? "#2563EB" : colors.primary,
+  }),
 
   cardTopRow: {
     display: "flex",
@@ -180,6 +221,14 @@ export const styles = {
     fontSize: "12px",
     color: "#9CA3AF",
     marginTop: "2px",
+  },
+
+  websiteLink: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12px",
+    fontWeight: "600",
+    color: colors.primary,
+    textDecoration: "none",
   },
 
   badge: (variant) => ({

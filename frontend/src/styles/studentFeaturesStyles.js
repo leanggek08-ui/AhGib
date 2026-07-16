@@ -211,9 +211,37 @@ export const styles = {
     background: "#FFFFFF",
     border: "1px solid #F1F3F5",
     borderRadius: "18px",
-    padding: "20px",
+    overflow: "hidden",
     boxShadow: "0 4px 16px rgba(83,19,192,.05)",
     transition: "all .18s ease",
+  },
+
+  cardPadded: {
+    padding: "20px",
+  },
+
+  cardImageWrap: {
+    position: "relative",
+    width: "100%",
+    aspectRatio: "16 / 9",
+    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    overflow: "hidden",
+  },
+
+  cardImage: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    display: "block",
+  },
+
+  cardImagePlaceholder: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "34px",
   },
 
   cardTop: {
