@@ -12,7 +12,6 @@ import {
   assessmentService,
   LIKERT_OPTIONS,
 } from "../../services/assessmentService";
-import { getUniversityImage } from "../../assets/universityImages";
 import { styles } from "../../styles/studentFeaturesStyles";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
@@ -281,54 +280,44 @@ function UniversitySearchPanel() {
         <div style={styles.grid}>
           {filtered.map((u) => {
             const uniMajorIds = majorIdsForUniversity(u.university_id);
-            const photo = getUniversityImage(u.name);
             return (
               <div key={u.university_id} style={styles.card}>
-                <div style={styles.cardImageWrap}>
-                  {photo ? (
-                    <img src={photo} alt={u.name} style={styles.cardImage} />
-                  ) : (
-                    <div style={styles.cardImagePlaceholder}>🎓</div>
-                  )}
-                </div>
-
-                <div style={styles.cardPadded}>
-                  <div style={styles.cardTop}>
-                    <div>
-                      <div style={styles.cardName}>{u.name}</div>
-                      <div style={styles.cardMeta}>
-                        📍 {u.location || "Location not listed"}
-                      </div>
+                <div style={styles.cardTop}>
+                  <div style={styles.cardIcon}>🎓</div>
+                  <div>
+                    <div style={styles.cardName}>{u.name}</div>
+                    <div style={styles.cardMeta}>
+                      📍 {u.location || "Location not listed"}
                     </div>
                   </div>
-
-                  <div style={styles.cardDivider} />
-
-               {uniMajorIds.length === 0 ? (
-                    <span style={styles.cardMeta}>No majors listed yet</span>
-                  ) : (
-                    <div style={styles.tagRow}>
-                      {uniMajorIds.slice(0, 5).map((mid) => (
-                        <span key={mid} style={styles.tag}>
-                          {majorName(mid)}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {u.website && (
-                    <div style={{ marginTop: "12px" }}>
-                      <a
-                        href={u.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ ...styles.matchReason, color: "#5313c0" }}
-                      >
-                        🔗 Visit website
-                      </a>
-                    </div>
-                  )}
                 </div>
+
+                <div style={styles.cardDivider} />
+
+                {uniMajorIds.length === 0 ? (
+                  <span style={styles.cardMeta}>No majors listed yet</span>
+                ) : (
+                  <div style={styles.tagRow}>
+                    {uniMajorIds.slice(0, 5).map((mid) => (
+                      <span key={mid} style={styles.tag}>
+                        {majorName(mid)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {u.website && (
+                  <div style={{ marginTop: "12px" }}>
+                    <a
+                      href={u.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ ...styles.matchReason, color: "#5313c0" }}
+                    >
+                      🔗 Visit website
+                    </a>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -340,20 +329,53 @@ function UniversitySearchPanel() {
 
 /* ============================================================
    AI Career Assessment panel
-   New flow: intro -> quiz (Likert 1-5 per question) -> submit ->
-   AI-generated report. See services/assessmentService.js for the
-   proposed backend contract this expects.
+   Flow: intro -> academic scores -> personality quiz (Likert 1-5,
+   questions from DB) -> submit to AI -> report. See
+   services/assessmentService.js for the backend contract.
    ============================================================ */
+
+const SUBJECTS = [
+  { key: "math", label: "Math" },
+  { key: "khmer", label: "Khmer" },
+  { key: "physics", label: "Physics" },
+  { key: "chemistry", label: "Chemistry" },
+  { key: "english", label: "English" },
+  { key: "history", label: "History" },
+  { key: "geography", label: "Geography" },
+  { key: "biology", label: "Biology" },
+];
 
 function AssessmentPanel() {
   const [step, setStep] = useState("intro");
+  const [academicScores, setAcademicScores] = useState({});
+  const [academicError, setAcademicError] = useState("");
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
 
-  async function startAssessment() {
+  function updateScore(key, value) {
+    setAcademicScores((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function goToAcademic() {
+    setStep("academic");
+  }
+
+  async function goToQuiz() {
+    // Every subject must have a score between 0 and 100.
+    const missing = SUBJECTS.some((s) => {
+      const v = academicScores[s.key];
+      return v === undefined || v === "" || Number(v) < 0 || Number(v) > 100;
+    });
+
+    if (missing) {
+      setAcademicError("Please enter a valid score (0–100) for every subject.");
+      return;
+    }
+    setAcademicError("");
+
     try {
       setStep("loading-questions");
       const data = await questionService.getAll();
@@ -392,12 +414,27 @@ function AssessmentPanel() {
   async function submitAnswers() {
     try {
       setStep("submitting");
-      const payload = Object.entries(answers).map(([question_id, score]) => ({
-        question_id: Number(question_id),
-        score,
-      }));
-      const result = await assessmentService.submitAssessment(payload);
-      setReport(result);
+
+      // Build a studentProfile the AI can actually read — pairing each
+      // question's text with the student's 1-5 Likert response, since the
+      // backend just JSON.stringifies whatever object we send here straight
+      // into the prompt (see services/groqService.js).
+      const responses = questions.map((q) => {
+        const score = answers[q.question_id];
+        const label =
+          LIKERT_OPTIONS.find((opt) => opt.score === score)?.label || null;
+        return {
+          question: q.question_text,
+          subject: q.subject,
+          answer_score: score,
+          answer_label: label,
+        };
+      });
+
+      const studentProfile = { academic_scores: academicScores, responses };
+
+      const result = await assessmentService.getRecommendation(studentProfile);
+      setReport(result.data);
       setStep("report");
     } catch (err) {
       setError(err.message || "Failed to generate your career report.");
@@ -408,6 +445,8 @@ function AssessmentPanel() {
   function retake() {
     setReport(null);
     setError("");
+    setAcademicScores({});
+    setAcademicError("");
     setStep("intro");
   }
 
@@ -417,13 +456,51 @@ function AssessmentPanel() {
         <div style={styles.assessmentIntroIcon}>💬</div>
         <div style={styles.assessmentTitle}>AI Career Assessment</div>
         <p style={styles.assessmentText}>
-          Answer a short set of questions about how you think, work, and
-          learn. Our AI will analyze your responses and recommend the majors
+          First, tell us your scores in each subject. Then answer a short
+          personality quiz. Our AI will combine both to recommend the majors
           and careers that fit you best.
         </p>
-        <button style={styles.startBtn} onClick={startAssessment}>
+        <button style={styles.startBtn} onClick={goToAcademic}>
           ✨ Start Assessment
         </button>
+      </div>
+    );
+  }
+
+  if (step === "academic") {
+    return (
+      <div style={styles.assessmentCard}>
+        <div style={styles.assessmentTitle}>Your Academic Scores</div>
+        <p style={styles.assessmentText}>
+          Enter your most recent score (0–100) for each subject.
+        </p>
+
+        <div style={styles.subjectGrid}>
+          {SUBJECTS.map((s) => (
+            <div key={s.key} style={styles.subjectField}>
+              <label style={styles.subjectLabel}>{s.label}</label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                inputMode="numeric"
+                placeholder="0–100"
+                value={academicScores[s.key] ?? ""}
+                onChange={(e) => updateScore(s.key, e.target.value)}
+                style={styles.subjectInput}
+              />
+            </div>
+          ))}
+        </div>
+
+        <ErrorBox message={academicError} styles={errorBoxStyle} />
+
+        <div style={styles.navRow}>
+          <span style={styles.subjectHint}>Step 1 of 2 — Academic Scores</span>
+          <button style={styles.navBtnPrimary} onClick={goToQuiz}>
+            Next: Personality Quiz
+          </button>
+        </div>
       </div>
     );
   }
@@ -450,7 +527,7 @@ function AssessmentPanel() {
     return (
       <div style={styles.assessmentCard}>
         <ErrorBox message={error} styles={errorBoxStyle} />
-        <button style={styles.startBtn} onClick={startAssessment}>
+        <button style={styles.startBtn} onClick={goToQuiz}>
           Try Again
         </button>
       </div>
@@ -464,6 +541,7 @@ function AssessmentPanel() {
 
     return (
       <div style={styles.assessmentCard}>
+        <span style={styles.subjectHint}>Step 2 of 2 — Personality Quiz</span>
         <span style={styles.progressLabel}>
           Question {current + 1} of {questions.length}
         </span>
@@ -522,22 +600,26 @@ function AssessmentPanel() {
         <div style={styles.assessmentIntroIcon}>🎯</div>
         <div style={styles.assessmentTitle}>Your Career Report</div>
 
-        {report.summary_text && (
-          <div style={styles.reportSummary}>{report.summary_text}</div>
+        {report.summary && (
+          <div style={styles.reportSummary}>{report.summary}</div>
         )}
 
-        {report.recommended_careers?.length > 0 && (
+        {report.top_careers?.length > 0 && (
           <>
             <div style={styles.reportSectionTitle}>Recommended Careers</div>
-            {report.recommended_careers.map((c) => (
-              <div key={c.careers_id} style={styles.matchCard}>
+            {report.top_careers.map((c) => (
+              <div key={c.name} style={styles.matchCard}>
                 <div>
-                  <div style={styles.matchName}>{c.careers_name}</div>
-                  {c.reason && (
-                    <div style={styles.matchReason}>{c.reason}</div>
+                  <div style={styles.matchName}>{c.name}</div>
+                  {c.why_it_fits && (
+                    <div style={styles.matchReason}>{c.why_it_fits}</div>
+                  )}
+                  {c.future_opportunities && (
+                    <div style={{ ...styles.matchReason, marginTop: "4px" }}>
+                      🔭 {c.future_opportunities}
+                    </div>
                   )}
                 </div>
-                <div style={styles.matchPercent}>{c.match_percent}%</div>
               </div>
             ))}
           </>
@@ -549,12 +631,67 @@ function AssessmentPanel() {
               Recommended Majors
             </div>
             {report.recommended_majors.map((m) => (
-              <div key={m.major_id} style={styles.matchCard}>
-                <div style={styles.matchName}>{m.major_name}</div>
-                <div style={styles.matchPercent}>{m.match_percent}%</div>
+              <div key={m.name} style={styles.matchCard}>
+                <div>
+                  <div style={styles.matchName}>{m.name}</div>
+                  {m.reason && (
+                    <div style={styles.matchReason}>{m.reason}</div>
+                  )}
+                </div>
               </div>
             ))}
           </>
+        )}
+
+        {report.recommended_universities?.length > 0 && (
+          <>
+            <div style={{ ...styles.reportSectionTitle, marginTop: "20px" }}>
+              Recommended Universities
+            </div>
+            {report.recommended_universities.map((u) => (
+              <div key={u.name} style={styles.matchCard}>
+                <div>
+                  <div style={styles.matchName}>
+                    {u.name}
+                    {u.program ? ` — ${u.program}` : ""}
+                  </div>
+                  {u.reason && (
+                    <div style={styles.matchReason}>{u.reason}</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+
+        {report.skills_to_develop?.length > 0 && (
+          <>
+            <div style={{ ...styles.reportSectionTitle, marginTop: "20px" }}>
+              Skills to Develop
+            </div>
+            <div style={styles.tagRow}>
+              {report.skills_to_develop.map((skill) => (
+                <span key={skill} style={styles.tag}>
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
+
+        {report.roadmap && (
+          <>
+            <div style={{ ...styles.reportSectionTitle, marginTop: "20px" }}>
+              Your Roadmap
+            </div>
+            <p style={styles.assessmentText}>{report.roadmap}</p>
+          </>
+        )}
+
+        {report.notes && (
+          <p style={{ ...styles.assessmentText, fontStyle: "italic" }}>
+            {report.notes}
+          </p>
         )}
 
         <button style={styles.retakeBtn} onClick={retake}>

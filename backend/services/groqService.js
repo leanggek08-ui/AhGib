@@ -91,7 +91,4 @@ async function chatWithCareerAdvisor(messages) {
   return completion?.choices?.[0]?.message?.content || "";
 }
 
-module.exports = {
-  generateCareerRecommendation,
-  chatWithCareerAdvisor,
-};
+export { generateCareerRecommendation, chatWithCareerAdvisor };

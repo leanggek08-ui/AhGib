@@ -176,13 +176,13 @@ export const styles = {
 
   chipActiveSolid: {
     background: colors.primary,
-    borderColor: colors.primary,
+    border: `1px solid ${colors.primary}`,
     color: "#FFFFFF",
   },
 
   chipActiveSoft: {
     background: "#EDE8F8",
-    borderColor: colors.accent,
+    border: `1px solid ${colors.accent}`,
     color: colors.primary,
   },
 
@@ -211,37 +211,9 @@ export const styles = {
     background: "#FFFFFF",
     border: "1px solid #F1F3F5",
     borderRadius: "18px",
-    overflow: "hidden",
+    padding: "20px",
     boxShadow: "0 4px 16px rgba(83,19,192,.05)",
     transition: "all .18s ease",
-  },
-
-  cardPadded: {
-    padding: "20px",
-  },
-
-  cardImageWrap: {
-    position: "relative",
-    width: "100%",
-    aspectRatio: "16 / 9",
-    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
-    overflow: "hidden",
-  },
-
-  cardImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    display: "block",
-  },
-
-  cardImagePlaceholder: {
-    width: "100%",
-    height: "100%",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: "34px",
   },
 
   cardTop: {
@@ -417,7 +389,7 @@ export const styles = {
 
   optionBtnActive: {
     background: "#EDE8F8",
-    borderColor: colors.primary,
+    border: `1px solid ${colors.primary}`,
     color: colors.primary,
   },
 
@@ -425,6 +397,49 @@ export const styles = {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+
+  subjectGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "16px",
+    marginBottom: "28px",
+  },
+
+  subjectField: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "6px",
+  },
+
+  subjectLabel: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "13px",
+    fontWeight: "700",
+    color: "#374151",
+  },
+
+  subjectInput: {
+    padding: "12px 14px",
+    borderRadius: "12px",
+    border: "1px solid #E5E7EB",
+    fontSize: "14px",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    outline: "none",
+    boxSizing: "border-box",
+    background: "#FFFFFF",
+    color: "#111827",
+    colorScheme: "light",
+  },
+
+  subjectInputError: {
+    border: "1px solid #F87171",
+  },
+
+  subjectHint: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12px",
+    color: "#9CA3AF",
   },
 
   navBtnSecondary: {

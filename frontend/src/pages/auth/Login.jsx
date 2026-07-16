@@ -86,7 +86,16 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                style={{ color: "#fff", fontSize: "12px", marginBottom: "10px" }}
+                style={{
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: "13px",
+                  marginBottom: "16px",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
               >
                 {showPassword ? "Hide password" : "Show password"}
               </button>

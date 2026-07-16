@@ -9,7 +9,6 @@ const {
 router.post("/recommendation", authenticateToken, async (req, res) => {
   try {
     const studentProfile = req.body;
-    const studentProfile = req.body;
 
     if (!studentProfile || typeof studentProfile !== "object") {
       return res.status(400).json({ message: "studentProfile is required" });
@@ -28,7 +27,6 @@ router.post("/recommendation", authenticateToken, async (req, res) => {
 
 router.post("/chat", authenticateToken, async (req, res) => {
   try {
-    const { messages } = req.body;
     const { messages } = req.body;
 
     if (!Array.isArray(messages) || messages.length === 0) {

@@ -4,16 +4,14 @@ function getToken() {
   return localStorage.getItem("token");
 }
 
-async function request(path, method = "GET", body = null) {
-  const token = getToken();
-
+async function request(path, body) {
   const res = await fetch(`${BASE_URL}${path}`, {
-    method,
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
-    body: body ? JSON.stringify(body) : null,
+    body: JSON.stringify(body),
   });
 
   const data = await res.json().catch(() => ({}));
@@ -26,36 +24,37 @@ async function request(path, method = "GET", body = null) {
 }
 
 /**
- * PROPOSED BACKEND CONTRACT (not built yet — for the Node/Express + OpenAI side)
+ * Real backend contract (routes/assessment.js + services/groqService.js):
  *
- * POST /assessment/submit
- *   body:  { answers: [{ question_id: number, score: number (1-5) }] }
+ * POST /assessments/recommendation
+ *   body: studentProfile (plain object — whatever shape you want to send;
+ *         it gets JSON.stringify'd straight into the AI prompt)
  *   returns: {
- *     report_id: number,
- *     summary_text: string,               // AI-generated overview paragraph
- *     recommended_careers: [
- *       { careers_id, careers_name, match_percent, reason }
- *     ],
- *     recommended_majors: [
- *       { major_id, major_name, match_percent }
- *     ],
- *     generated_at: string (ISO date)
+ *     message: string,
+ *     data: {
+ *       summary: string,
+ *       top_careers: [{ name, why_it_fits, future_opportunities }],
+ *       recommended_majors: [{ name, reason }],
+ *       recommended_universities: [{ name, program, reason }],
+ *       skills_to_develop: string[],
+ *       roadmap: string,
+ *       notes: string
+ *     }
  *   }
  *
- * GET /assessment/report/latest
- *   returns the same shape as above for the student's most recent submission,
- *   or 404 if they haven't completed an assessment yet.
+ * POST /assessments/chat
+ *   body: { messages: [{ role: "user"|"assistant", content: string }] }
+ *   returns: { message: string, reply: string }
  */
 export const assessmentService = {
-  submitAssessment: (answers) =>
-    request("/assessment/submit", "POST", { answers }),
+  getRecommendation: (studentProfile) =>
+    request("/assessments/recommendation", studentProfile),
 
-  getLatestReport: () => request("/assessment/report/latest"),
+  chat: (messages) => request("/assessments/chat", { messages }),
 };
 
-// Every question is treated as a 1–5 Likert-style item (Strongly Disagree →
-// Strongly Agree), since question_type/subject don't carry their own option
-// text. Swap this out if a question ever needs custom option labels.
+// Every quiz question is treated as a 1–5 Likert-style item, since your
+// question_type/subject fields don't carry their own option text.
 export const LIKERT_OPTIONS = [
   { score: 1, label: "Strongly Disagree" },
   { score: 2, label: "Disagree" },

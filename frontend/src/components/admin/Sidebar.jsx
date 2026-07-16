@@ -9,10 +9,7 @@ export default function Sidebar() {
   const role = user?.role_id;
   const isAdmin = role === 1;
   const isSuperAdmin = role === 3;
-<<<<<<< HEAD
   const panelLabel = isSuperAdmin ? "Super Admin Panel" : isAdmin ? "Admin Panel" : "Student Panel";
-=======
->>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -30,17 +27,10 @@ export default function Sidebar() {
       {/* Top */}
       <div>
         <div style={styles.logo}>AhGib</div>
-<<<<<<< HEAD
         <div style={styles.logoSub}>{panelLabel}</div>
 
         <div style={styles.menu}>
           <NavLink to={isAdmin || isSuperAdmin ? "/admin/dashboard" : "/student/dashboard"} style={menuStyle}>
-=======
-        <div style={styles.logoSub}>Admin Panel</div>
-
-        <div style={styles.menu}>
-          <NavLink to="/admin/dashboard" style={menuStyle}>
->>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
           📊 Dashboard
         </NavLink>
 
@@ -55,7 +45,6 @@ export default function Sidebar() {
             </NavLink>
 
             <NavLink to="/admin/universities" style={menuStyle}>
-<<<<<<< HEAD
             🎓 Manage Universities
             </NavLink>
             <NavLink to="/admin/majors" style={menuStyle}>
@@ -79,10 +68,6 @@ export default function Sidebar() {
 
 
 
-=======
-            🎓 Universities
-            </NavLink>
->>>>>>> c76542f1a13ebaf44334a4a51e26cf2124ea161d
           </>
         )}
       {isSuperAdmin && (

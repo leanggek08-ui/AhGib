@@ -9,18 +9,19 @@ export const styles = {
     justifyContent: "center",
     background:
       "radial-gradient(circle at top, #2a1450 0%, #0f081f 60%)",
-    padding: "24px",
+    padding: "0",
   },
 
   /* ================= CARD ================= */
   card: {
     display: "flex",
     width: "100%",
-    maxWidth: "980px",
-    minHeight: "640px",
-    borderRadius: "28px",
+    maxWidth: "none",
+    height: "100vh",
+    minHeight: "100vh",
+    borderRadius: "0",
     overflow: "hidden",
-    boxShadow: "0 35px 90px rgba(0,0,0,0.55)",
+    boxShadow: "none",
     background: "#fff",
   },
 
@@ -28,32 +29,32 @@ export const styles = {
   leftPanel: {
     flex: "1",
     background: "#f8fafc",
-    padding: "60px 50px",
+    padding: "80px 64px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
   },
 
   brand: {
-    fontSize: "18px",
+    fontSize: "22px",
     fontWeight: 800,
     color: colors.primary,
-    marginBottom: "14px",
+    marginBottom: "18px",
     letterSpacing: "-0.5px",
   },
 
   leftTitle: {
-    fontSize: "28px",
+    fontSize: "38px",
     fontWeight: 800,
     color: "#0f172a",
-    marginBottom: "10px",
+    marginBottom: "14px",
   },
 
   leftText: {
-    fontSize: "14px",
+    fontSize: "16px",
     color: "#64748b",
-    lineHeight: "1.6",
-    maxWidth: "320px",
+    lineHeight: "1.7",
+    maxWidth: "400px",
   },
 
   /* ================= RIGHT SIDE ================= */
@@ -63,50 +64,51 @@ export const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "60px 50px",
+    padding: "80px 64px",
   },
 
   formWrap: {
     width: "100%",
-    maxWidth: "360px",
+    maxWidth: "440px",
   },
 
   title: {
-    fontSize: "30px",
+    fontSize: "38px",
     fontWeight: 800,
     color: "#fff",
-    marginBottom: "6px",
+    marginBottom: "8px",
     letterSpacing: "-0.5px",
   },
 
   subtitle: {
-    fontSize: "14px",
+    fontSize: "16px",
     color: "rgba(255,255,255,0.75)",
-    marginBottom: "26px",
-    lineHeight: "1.5",
+    marginBottom: "34px",
+    lineHeight: "1.6",
   },
 
   /* ================= FORM ================= */
   label: {
-    fontSize: "12px",
+    fontSize: "13px",
     color: "rgba(255,255,255,0.8)",
     fontWeight: 600,
-    marginBottom: "6px",
+    marginBottom: "8px",
     display: "block",
     letterSpacing: "0.4px",
   },
 
   input: {
     width: "100%",
-    padding: "14px 16px",
-    borderRadius: "12px",
+    padding: "17px 18px",
+    borderRadius: "14px",
     border: "1px solid rgba(255,255,255,0.15)",
     background: "rgba(255,255,255,0.08)",
     color: "#fff",
-    fontSize: "14px",
+    fontSize: "16px",
     outline: "none",
-    marginBottom: "14px",
+    marginBottom: "18px",
     transition: "all 0.2s ease",
+    boxSizing: "border-box",
   },
 
   inputFocus: {
@@ -116,11 +118,12 @@ export const styles = {
 
   button: {
     width: "100%",
-    padding: "14px",
-    borderRadius: "12px",
+    padding: "17px",
+    borderRadius: "14px",
     background: "#ffffff",
     color: "#0f172a",
     fontWeight: 700,
+    fontSize: "16px",
     border: "none",
     cursor: "pointer",
     transition: "all 0.2s ease",
@@ -135,17 +138,17 @@ export const styles = {
     background: "rgba(255, 99, 99, 0.12)",
     border: "1px solid rgba(255, 99, 99, 0.25)",
     color: "#fecaca",
-    padding: "10px 12px",
-    borderRadius: "10px",
-    fontSize: "13px",
-    marginBottom: "14px",
+    padding: "12px 14px",
+    borderRadius: "12px",
+    fontSize: "14px",
+    marginBottom: "16px",
   },
 
   linkText: {
     color: "rgba(255,255,255,0.7)",
-    fontSize: "13px",
+    fontSize: "14px",
     textAlign: "center",
-    marginTop: "16px",
+    marginTop: "20px",
   },
 
   link: {
