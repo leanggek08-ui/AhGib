@@ -6,6 +6,15 @@ import { logActivity } from "../utils/activityLogger.js";
 export async function register(req, res) {
   try {
     const { username, email, password } = req.body;
+    
+    const existingUser = await pool.query("SELECT * FROM users WHERE email=$1",[email]);
+    if(existingUser.rows.length > 0){
+      return res.status(400).json({
+      message:"Email already exists"
+      });
+    
+    
+    }
 
     const hash = await bcrypt.hash(password, 10);
 
