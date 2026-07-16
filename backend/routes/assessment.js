@@ -6,10 +6,12 @@ import {
   chatWithCareerAdvisor,
 } from "../services/groqService.js";
 
+
 const router = express.Router();
 
 router.post("/", ass.createAssessment);
 router.get("/:user_id", ass.getAssessment);
+router.put("/:ass_id/complete", ass.completeAssessment);
 
 router.post("/recommendation", authenticateToken, async (req, res) => {
   try {

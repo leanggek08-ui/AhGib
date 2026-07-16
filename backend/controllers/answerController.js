@@ -1,5 +1,5 @@
 import pool from "../db/db.js";
-import { calculateScore } from "../services/scoreService.js";
+
 export const createAnswer = async (req, res) => {
   const { ass_id, question_id, answer_text, answer_value } = req.body;
 
@@ -18,9 +18,6 @@ export const createAnswer = async (req, res) => {
        RETURNING *`,
       [ass_id, question_id, answer_text, answer_value]
     );
-
-    // auto score
-    await calculateScore(ass_id);
 
     res.json(result.rows[0]);
   } catch (err) {

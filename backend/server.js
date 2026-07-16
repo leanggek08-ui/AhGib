@@ -15,6 +15,7 @@ import careerRoutes from "./routes/careerRoutes.js";
 import uniMajorRoutes from "./routes/uniMajorRoutes.js";
 import careerSkillRoutes from "./routes/careerSkillRoutes.js";
 import majorCareerRoutes from "./routes/majorCareerRoutes.js";
+import academicScoreRoutes from "./routes/academicScore.js";
 import dotenv from "dotenv";
 import pool from "./db/db.js";
 const app = express();
@@ -39,6 +40,7 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/uni-major", uniMajorRoutes);
 app.use( "/career-skill", careerSkillRoutes);
 app.use("/major-career", majorCareerRoutes);
+app.use("/academic-scores", academicScoreRoutes);
 
 
 

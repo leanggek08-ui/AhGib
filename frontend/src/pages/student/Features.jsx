@@ -347,6 +347,7 @@ const SUBJECTS = [
 
 function AssessmentPanel() {
   const [step, setStep] = useState("intro");
+  const [assId, setAssId] = useState(null); 
   const [academicScores, setAcademicScores] = useState({});
   const [academicError, setAcademicError] = useState("");
   const [questions, setQuestions] = useState([]);
@@ -359,12 +360,19 @@ function AssessmentPanel() {
     setAcademicScores((prev) => ({ ...prev, [key]: value }));
   }
 
-  function goToAcademic() {
-    setStep("academic");
+  async function goToAcademic() {
+    try {
+      const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+      const created = await assessmentService.createAssessment(currentUser.user_id);
+      setAssId(created.ass_id);
+      setStep("academic");
+    } catch (err) {
+      setError(err.message || "Failed to start assessment.");
+      setStep("error");
+    }
   }
 
   async function goToQuiz() {
-    // Every subject must have a score between 0 and 100.
     const missing = SUBJECTS.some((s) => {
       const v = academicScores[s.key];
       return v === undefined || v === "" || Number(v) < 0 || Number(v) > 100;
@@ -377,6 +385,12 @@ function AssessmentPanel() {
     setAcademicError("");
 
     try {
+      // NEW — persist academic scores to the DB before moving on
+      const numericScores = Object.fromEntries(
+        SUBJECTS.map((s) => [s.key, Number(academicScores[s.key])])
+      );
+      await assessmentService.saveAcademicScores(assId, numericScores);
+
       setStep("loading-questions");
       const data = await questionService.getAll();
       if (!data || data.length === 0) {
@@ -399,7 +413,18 @@ function AssessmentPanel() {
     }));
   }
 
-  function goNext() {
+  async function goNext() {
+    const q = questions[current];
+    const score = answers[q.question_id];
+
+    try {
+      await assessmentService.submitAnswer(assId, q.question_id, score);
+    } catch (err) {
+      // Non-fatal: don't block the quiz UX on a single write failure,
+      // but surface it so it's not silently lost.
+      console.error("Failed to save answer:", err.message);
+    }
+
     if (current < questions.length - 1) {
       setCurrent(current + 1);
     } else {
@@ -415,10 +440,8 @@ function AssessmentPanel() {
     try {
       setStep("submitting");
 
-      // Build a studentProfile the AI can actually read — pairing each
-      // question's text with the student's 1-5 Likert response, since the
-      // backend just JSON.stringifies whatever object we send here straight
-      // into the prompt (see services/groqService.js).
+      await assessmentService.completeAssessment(assId);
+
       const responses = questions.map((q) => {
         const score = answers[q.question_id];
         const label =
@@ -447,6 +470,7 @@ function AssessmentPanel() {
     setError("");
     setAcademicScores({});
     setAcademicError("");
+    setAssId(null);        // NEW — reset so retake creates a fresh assessment
     setStep("intro");
   }
 

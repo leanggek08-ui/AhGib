@@ -4,14 +4,14 @@ function getToken() {
   return localStorage.getItem("token");
 }
 
-async function request(path, body) {
+async function request(path, body, method = "POST") {
   const res = await fetch(`${BASE_URL}${path}`, {
-    method: "POST",
+    method,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getToken()}`,
     },
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
   });
 
   const data = await res.json().catch(() => ({}));
@@ -23,38 +23,24 @@ async function request(path, body) {
   return data;
 }
 
-/**
- * Real backend contract (routes/assessment.js + services/groqService.js):
- *
- * POST /assessments/recommendation
- *   body: studentProfile (plain object — whatever shape you want to send;
- *         it gets JSON.stringify'd straight into the AI prompt)
- *   returns: {
- *     message: string,
- *     data: {
- *       summary: string,
- *       top_careers: [{ name, why_it_fits, future_opportunities }],
- *       recommended_majors: [{ name, reason }],
- *       recommended_universities: [{ name, program, reason }],
- *       skills_to_develop: string[],
- *       roadmap: string,
- *       notes: string
- *     }
- *   }
- *
- * POST /assessments/chat
- *   body: { messages: [{ role: "user"|"assistant", content: string }] }
- *   returns: { message: string, reply: string }
- */
 export const assessmentService = {
   getRecommendation: (studentProfile) =>
     request("/assessments/recommendation", studentProfile),
 
   chat: (messages) => request("/assessments/chat", { messages }),
+
+  createAssessment: (user_id) => request("/assessments", { user_id }),
+
+  submitAnswer: (ass_id, question_id, answer_value, answer_text = null) =>
+    request("/answers", { ass_id, question_id, answer_value, answer_text }),
+
+  completeAssessment: (ass_id) =>
+    request(`/assessments/${ass_id}/complete`, null, "PUT"),
+
+  saveAcademicScores: (ass_id, scores) =>
+    request("/academic-scores", { ass_id, scores }),
 };
 
-// Every quiz question is treated as a 1–5 Likert-style item, since your
-// question_type/subject fields don't carry their own option text.
 export const LIKERT_OPTIONS = [
   { score: 1, label: "Strongly Disagree" },
   { score: 2, label: "Disagree" },
