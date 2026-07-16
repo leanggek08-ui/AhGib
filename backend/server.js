@@ -1,54 +1,61 @@
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import express from "express";
-import cors from "cors";
-
-import authRoutes from "./routes/auth.js";
-import { authenticateToken } from "./middlewares/authMiddleware.js";
-import questionRoutes from "./routes/question.js";
-import assessmentRoutes from "./routes/assessment.js";
+import cors from "cors"; // allow frontend (ex:port 3000) to talk to backend port 5000
+import authRoutes from "./routes/auth.js"; // connect auth route to server
+import authenticateToken from "./middlewares/authMiddleware.js";
+import questionRoutes from "./routes/question.js"; // connect queation to server
+import assessmentRoutes from "./routes/assessment.js"; 
 import answerRoutes from "./routes/answer.js";
 import scoreRoutes from "./routes/score.js";
-import aiRoutes from "./routes/ai.js";
+import userRoutes from "./routes/user.js";
+import adminRoutes from "./routes/admin.js";
+import dashboardRoutes from "./routes/dashboard.js";
+import universityRoutes from "./routes/universityRoutes.js";
+import majorRoutes from "./routes/majorRoutes.js";
+import careerRoutes from "./routes/careerRoutes.js";
+import uniMajorRoutes from "./routes/uniMajorRoutes.js";
+import careerSkillRoutes from "./routes/careerSkillRoutes.js";
+import majorCareerRoutes from "./routes/majorCareerRoutes.js";
+import academicScoreRoutes from "./routes/academicScore.js";
+import dotenv from "dotenv";
 import pool from "./db/db.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({
-  path: path.join(__dirname, ".env"),
-});
-
 const app = express();
-const PORT = process.env.APP_PORT || 5000;
+
+const PORT = process.env.PORT || 5000;
+dotenv.config();
+
 
 app.use(cors());
 app.use(express.json());
-
 app.use("/auth", authRoutes);
-app.use("/assessment", assessmentRoutes);
+app.use("/assessments", assessmentRoutes);
 app.use("/questions", questionRoutes);
-app.use("/answer", answerRoutes);
+app.use("/universities", universityRoutes);
+app.use("/major", majorRoutes);
+app.use("/career", careerRoutes);
+app.use("/answers", answerRoutes);
 app.use("/score", scoreRoutes);
-app.use("/api/ai", aiRoutes);
+app.use("/users", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/dashboard", dashboardRoutes);
+app.use("/uni-major", uniMajorRoutes);
+app.use( "/career-skill", careerSkillRoutes);
+app.use("/major-career", majorCareerRoutes);
+app.use("/academic-scores", academicScoreRoutes);
 
+
+
+// test route
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
 });
 
+// test database connection
 app.get("/test-db", async (req, res) => {
   try {
     const result = await pool.query("SELECT NOW()");
-    res.json({
-      message: "Database connected successfully",
-      databaseTime: result.rows[0].now,
-    });
-  } catch (error) {
-    res.status(500).json({
-      message: "Database connection failed",
-      error: error.message,
-    });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -59,14 +66,6 @@ app.get("/protected", authenticateToken, (req, res) => {
   });
 });
 
-app.use((error, req, res, next) => {
-  if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
-    return res.status(400).json({ error: "Invalid JSON request body" });
-  }
-
-  return next(error);
-});
-
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
