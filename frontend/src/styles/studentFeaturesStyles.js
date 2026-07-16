@@ -216,6 +216,32 @@ export const styles = {
     transition: "all .18s ease",
   },
 
+  cardMedia: {
+    height: "130px",
+    margin: "-20px -20px 18px",
+    borderRadius: "18px 18px 0 0",
+    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+
+  cardLogo: {
+    width: "86px",
+    height: "86px",
+    objectFit: "contain",
+    boxSizing: "border-box",
+    padding: "12px",
+    borderRadius: "16px",
+    background: "rgba(255,255,255,.96)",
+    boxShadow: "0 10px 24px rgba(15,2,48,.2)",
+  },
+
+  cardMediaFallback: {
+    fontSize: "38px",
+  },
+
   cardTop: {
     display: "flex",
     alignItems: "flex-start",

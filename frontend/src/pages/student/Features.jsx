@@ -16,6 +16,41 @@ import { styles } from "../../styles/studentFeaturesStyles";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
 
+function getUniversityLogo(website) {
+  if (!website) return null;
+
+  try {
+    const url = new URL(
+      website.startsWith("http://") || website.startsWith("https://")
+        ? website
+        : `https://${website}`,
+    );
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(url.hostname)}&sz=128`;
+  } catch {
+    return null;
+  }
+}
+
+function UniversityCardImage({ university }) {
+  const [failed, setFailed] = useState(false);
+  const logo = getUniversityLogo(university.website);
+
+  return (
+    <div style={styles.cardMedia}>
+      {logo && !failed ? (
+        <img
+          src={logo}
+          alt={`${university.name} logo`}
+          style={styles.cardLogo}
+          onError={() => setFailed(true)}
+        />
+      ) : (
+        <span style={styles.cardMediaFallback}>🎓</span>
+      )}
+    </div>
+  );
+}
+
 export default function Features() {
   const location = useLocation();
   const initialMode =
@@ -282,6 +317,7 @@ function UniversitySearchPanel() {
             const uniMajorIds = majorIdsForUniversity(u.university_id);
             return (
               <div key={u.university_id} style={styles.card}>
+                <UniversityCardImage university={u} />
                 <div style={styles.cardTop}>
                   <div style={styles.cardIcon}>🎓</div>
                   <div>
