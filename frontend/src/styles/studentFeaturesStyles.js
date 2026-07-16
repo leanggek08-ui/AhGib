@@ -127,6 +127,9 @@ export const styles = {
     fontFamily: "'Plus Jakarta Sans', sans-serif",
     outline: "none",
     boxSizing: "border-box",
+    background: "#FFFFFF",
+    color: "#111827",
+    colorScheme: "light",
   },
 
   /* ===== Filter chips ===== */

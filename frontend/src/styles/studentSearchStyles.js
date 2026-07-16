@@ -1,8 +1,24 @@
 import { colors } from "./colors";
 
+// Breaks a section out to full viewport width even though StudentLayout
+// nests page content inside a centered, max-width <wrap> container.
+//
+// NOTE: a plain `marginLeft/Right: calc(50% - 50vw)` does NOT work here —
+// margin percentages resolve against the *containing block's* width (wrap's
+// 1180px), not the viewport, so on wide screens it under-corrects and the
+// section ends up shifted left with a gap on the right. This left/margin-vw
+// combo works instead because `left: 50%` shifts by 50% of wrap's width
+// (which equals wrap's offset from the viewport edge, since wrap is
+// horizontally centered), while `margin: -50vw` (an absolute vw unit, not a
+// percentage) pulls back by half the true viewport width — the two cancel
+// out correctly regardless of nesting depth.
 const fullBleed = {
-  marginLeft: "calc(50% - 50vw)",
-  marginRight: "calc(50% - 50vw)",
+  position: "relative",
+  left: "50%",
+  right: "50%",
+  width: "100vw",
+  marginLeft: "-50vw",
+  marginRight: "-50vw",
 };
 
 export const styles = {
@@ -73,6 +89,9 @@ export const styles = {
     outline: "none",
     boxSizing: "border-box",
     boxShadow: "0 12px 30px rgba(0,0,0,.25)",
+    background: "#FFFFFF",
+    color: "#111827",
+    colorScheme: "light",
   },
 
   body: {

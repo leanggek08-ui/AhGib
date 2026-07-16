@@ -1,399 +1,392 @@
+import { colors } from "./colors";
+
+// Breaks a section out to full viewport width even though StudentLayout
+// nests page content inside a centered, max-width <wrap> container.
+//
+// NOTE: a plain `marginLeft/Right: calc(50% - 50vw)` does NOT work here —
+// margin percentages resolve against the *containing block's* width (wrap's
+// 1180px), not the viewport, so on wide screens it under-corrects and the
+// section ends up shifted left with a gap on the right. This left/margin-vw
+// combo works instead because `left: 50%` shifts by 50% of wrap's width
+// (which equals wrap's offset from the viewport edge, since wrap is
+// horizontally centered), while `margin: -50vw` (an absolute vw unit, not a
+// percentage) pulls back by half the true viewport width — the two cancel
+// out correctly regardless of nesting depth.
+const fullBleed = {
+  position: "relative",
+  left: "50%",
+  right: "50%",
+  width: "100vw",
+  marginLeft: "-50vw",
+  marginRight: "-50vw",
+};
+
 export const styles = {
   container: {
-    background: "#F8FAFC",
-    minHeight: "100vh",
-    fontFamily:
-      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  },
-
-  /* ===== HERO ===== */
-  hero: {
-    position: "relative",
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "hidden",
-    background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)",
-  },
-
-  heroBg: {
-    position: "absolute",
-    inset: 0,
-    background:
-      "radial-gradient(ellipse at 20% 50%, rgba(99,102,241,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(139,92,246,0.12) 0%, transparent 50%)",
-  },
-
-  heroShape1: {
-    position: "absolute",
-    top: "10%",
-    left: "5%",
-    width: "300px",
-    height: "300px",
-    borderRadius: "50%",
-    background: "rgba(99,102,241,0.08)",
-    filter: "blur(60px)",
-    animation: "float 6s ease-in-out infinite",
-  },
-
-  heroShape2: {
-    position: "absolute",
-    bottom: "10%",
-    right: "5%",
-    width: "250px",
-    height: "250px",
-    borderRadius: "50%",
-    background: "rgba(139,92,246,0.08)",
-    filter: "blur(60px)",
-    animation: "float 8s ease-in-out infinite",
-    animationDelay: "2s",
-  },
-
-  heroOverlay: {
-    position: "absolute",
-    inset: 0,
-    background:
-      "linear-gradient(180deg, transparent 0%, rgba(15,23,42,0.4) 100%)",
-  },
-
-  heroContent: {
-    position: "relative",
-    zIndex: 2,
-    textAlign: "center",
-    padding: "0 24px",
-    maxWidth: "720px",
-  },
-
-  heroBadge: {
-    display: "inline-block",
-    background: "rgba(99,102,241,0.15)",
-    color: "#A5B4FC",
-    fontSize: "13px",
-    fontWeight: "600",
-    padding: "8px 20px",
-    borderRadius: "100px",
-    marginBottom: "24px",
-    letterSpacing: "0.05em",
-    textTransform: "uppercase",
-    border: "1px solid rgba(99,102,241,0.2)",
-  },
-
-  heroTitle: {
-    fontSize: "clamp(36px, 7vw, 64px)",
-    fontWeight: "800",
-    color: "#FFFFFF",
-    margin: 0,
-    marginBottom: "20px",
-    lineHeight: 1.1,
-    letterSpacing: "-0.02em",
-  },
-
-  heroTitleAccent: {
-    background: "linear-gradient(135deg, #818CF8, #C084FC)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-  },
-
-  heroSubtitle: {
-    fontSize: "clamp(16px, 2vw, 19px)",
-    color: "#94A3B8",
-    maxWidth: "540px",
-    margin: "0 auto 36px",
-    lineHeight: 1.7,
-  },
-
-  heroActions: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "16px",
-    flexWrap: "wrap",
-  },
-
-  heroBtnPrimary: {
-    display: "inline-block",
-    padding: "14px 32px",
-    borderRadius: "12px",
-    background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
-    color: "#FFFFFF",
-    fontWeight: "600",
-    fontSize: "15px",
-    textDecoration: "none",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-    boxShadow: "0 4px 16px rgba(99,102,241,0.35)",
-  },
-
-  heroBtnSecondary: {
-    display: "inline-block",
-    padding: "14px 32px",
-    borderRadius: "12px",
-    background: "rgba(255,255,255,0.06)",
-    color: "#E2E8F0",
-    fontWeight: "600",
-    fontSize: "15px",
-    textDecoration: "none",
-    border: "1px solid rgba(255,255,255,0.1)",
-    transition: "background 0.2s ease",
-  },
-
-  /* ===== STATS BAR ===== */
-  statsBar: {
-    display: "flex",
-    justifyContent: "center",
-    gap: "48px",
-    padding: "48px 24px",
     background: "#FFFFFF",
-    borderBottom: "1px solid #F1F5F9",
-    flexWrap: "wrap",
+    minHeight: "100vh",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
   },
 
-  statItem: {
-    textAlign: "center",
-  },
+  /* ===== Shared section shell ===== */
 
-  statValue: {
-    fontSize: "28px",
-    fontWeight: "800",
-    color: "#1E293B",
-    marginBottom: "4px",
-    letterSpacing: "-0.02em",
-  },
-
-  statLabel: {
-    fontSize: "13px",
-    color: "#94A3B8",
-    fontWeight: "500",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  },
-
-  /* ===== GENERIC SECTION ===== */
   section: {
-    padding: "80px 24px",
+    maxWidth: "1180px",
+    margin: "0 auto",
+    padding: "72px 32px",
   },
 
   sectionAlt: {
-    padding: "80px 24px",
-    background: "#FFFFFF",
+    ...fullBleed,
+    background: "#FAFAFC",
   },
 
-  sectionInner: {
-    maxWidth: "880px",
-    margin: "0 auto",
+  sectionHead: {
+    textAlign: "center",
+    maxWidth: "640px",
+    margin: "0 auto 44px",
   },
 
-  sectionNumber: {
-    fontSize: "12px",
-    fontWeight: "700",
-    color: "#6366F1",
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-    marginBottom: "12px",
-  },
-
-  sectionHeading: {
-    fontSize: "clamp(24px, 4vw, 32px)",
-    fontWeight: "800",
-    color: "#0F172A",
-    margin: 0,
-    marginBottom: "12px",
-    letterSpacing: "-0.02em",
-  },
-
-  divider: {
-    width: "60px",
-    height: "4px",
-    borderRadius: "2px",
-    background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
+  badgePill: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px 18px",
+    borderRadius: "999px",
+    background: "#EDE8F8",
     marginBottom: "24px",
   },
 
-  sectionText: {
-    fontSize: "16px",
-    color: "#64748B",
-    lineHeight: 1.8,
-    maxWidth: "680px",
+  badgeText: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12px",
+    fontWeight: "800",
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: colors.primary,
   },
 
-  /* ===== MISSION ===== */
-  missionWrap: {
-    padding: "0 24px 80px",
+  sectionTitle: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "30px",
+    fontWeight: "900",
+    color: "#1F2937",
+    lineHeight: "1.3",
+    letterSpacing: "-0.01em",
   },
 
-  missionCard: {
-    maxWidth: "880px",
-    margin: "0 auto",
-    background: "linear-gradient(135deg, #1E293B 0%, #334155 100%)",
-    borderRadius: "24px",
-    padding: "56px 48px",
+  sectionSubtitle: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    color: "#6B7280",
+    fontSize: "14.5px",
+    lineHeight: "1.7",
+    marginTop: "14px",
+  },
+
+  /* ===== Hero ===== */
+
+  hero: {
+    ...fullBleed,
+    background: "linear-gradient(180deg, #F4F2FA 0%, #EDE8F8 100%)",
+    padding: "80px 32px 64px",
     textAlign: "center",
-    position: "relative",
-    overflow: "hidden",
   },
 
-  missionIcon: {
-    fontSize: "48px",
+  heroInner: {
+    maxWidth: "820px",
+    margin: "0 auto",
+  },
+
+  heroTitle: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "40px",
+    fontWeight: "900",
+    color: "#1F2937",
+    lineHeight: "1.25",
+    letterSpacing: "-0.01em",
     marginBottom: "20px",
   },
 
-  missionHeading: {
-    fontSize: "28px",
-    fontWeight: "700",
-    color: "#FFFFFF",
-    margin: 0,
-    marginBottom: "16px",
+  heroTitleAccent: {
+    color: colors.primary,
+    display: "block",
   },
 
-  missionText: {
-    fontSize: "16px",
-    color: "#CBD5E1",
-    lineHeight: 1.75,
-    maxWidth: "600px",
+  heroSubtitle: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    color: "#6B7280",
+    fontSize: "15.5px",
+    lineHeight: "1.8",
+    maxWidth: "640px",
     margin: "0 auto",
   },
 
-  /* ===== FEATURES ===== */
-  featureGrid: {
+  backLink: {
+    display: "inline-block",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "13px",
+    fontWeight: "700",
+    color: colors.primary,
+    textDecoration: "none",
+    marginBottom: "18px",
+  },
+
+  /* ===== Mission / Vision ===== */
+
+  missionVisionGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: "24px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+    gap: "20px",
   },
 
-  featureCard: {
-    background: "#FFFFFF",
-    borderRadius: "20px",
-    padding: "32px 24px",
-    border: "1px solid #F1F5F9",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
-    textAlign: "center",
-    transition: "transform 0.25s ease, box-shadow 0.25s ease",
-    cursor: "default",
+  missionCard: {
+    background: "#FAFAFC",
+    border: "1px solid #F1F3F5",
+    borderRadius: "22px",
+    padding: "34px",
   },
 
-  featureIcon: {
-    width: "60px",
-    height: "60px",
-    borderRadius: "16px",
-    fontSize: "26px",
+  visionCard: {
+    background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.blend} 100%)`,
+    borderRadius: "22px",
+    padding: "34px",
+  },
+
+  cardIconWrap: (light) => ({
+    width: "46px",
+    height: "46px",
+    borderRadius: "14px",
+    background: light ? "#EDE8F8" : "rgba(255,255,255,.18)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    margin: "0 auto 20px",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+    fontSize: "20px",
+    marginBottom: "18px",
+    color: light ? colors.primary : "#FFFFFF",
+  }),
+
+  cardTitle: (light) => ({
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "19px",
+    fontWeight: "800",
+    color: light ? "#1F2937" : "#FFFFFF",
+    marginBottom: "12px",
+  }),
+
+  cardText: (light) => ({
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "14px",
+    lineHeight: "1.8",
+    color: light ? "#6B7280" : "rgba(255,255,255,.85)",
+  }),
+
+  /* ===== Values / Feature grid ===== */
+
+  valuesGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+    gap: "18px",
   },
 
-  featureTitle: {
-    fontSize: "17px",
-    fontWeight: "700",
-    color: "#0F172A",
-    margin: 0,
+  valueCard: {
+    background: "#FFFFFF",
+    borderRadius: "18px",
+    padding: "26px",
+    border: "1px solid #F1F3F5",
+  },
+
+  valueIconWrap: {
+    width: "48px",
+    height: "48px",
+    borderRadius: "14px",
+    background: "#EDE8F8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "21px",
+    color: colors.primary,
+    marginBottom: "16px",
+  },
+
+  valueTitle: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "15px",
+    fontWeight: "800",
+    color: "#1F2937",
+    marginBottom: "8px",
+  },
+
+  valueText: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12.5px",
+    color: "#6B7280",
+    lineHeight: "1.65",
+  },
+
+  /* ===== Who We Are / numbered text sections ===== */
+
+  sectionNumber: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "13px",
+    fontWeight: "800",
+    color: colors.accent,
+    letterSpacing: "0.1em",
     marginBottom: "10px",
   },
 
-  featureText: {
-    fontSize: "14px",
-    color: "#64748B",
-    lineHeight: 1.7,
-    margin: 0,
+  sectionHeading: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "26px",
+    fontWeight: "900",
+    color: "#1F2937",
+    marginBottom: "16px",
   },
 
-  /* ===== TEAM ===== */
+  divider: {
+    width: "48px",
+    height: "3px",
+    borderRadius: "2px",
+    background: colors.primary,
+    marginBottom: "20px",
+  },
+
+  sectionText: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "14.5px",
+    color: "#6B7280",
+    lineHeight: "1.8",
+    maxWidth: "760px",
+  },
+
+  /* ===== Features grid (existing product features) ===== */
+
+  featureGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+    gap: "18px",
+    marginTop: "8px",
+  },
+
+  featureCard: {
+    background: "#FAFAFC",
+    borderRadius: "18px",
+    padding: "26px",
+    border: "1px solid #F1F3F5",
+  },
+
+  featureIcon: {
+    width: "48px",
+    height: "48px",
+    borderRadius: "14px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "21px",
+    marginBottom: "16px",
+  },
+
+  featureTitle: {
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "15px",
+    fontWeight: "800",
+    color: "#1F2937",
+    marginBottom: "8px",
+  },
+
+  featureText: {
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12.5px",
+    color: "#6B7280",
+    lineHeight: "1.65",
+  },
+
+  /* ===== Team grid ===== */
+
   teamGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-    gap: "28px",
-    marginTop: "40px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: "24px",
+    marginTop: "8px",
+    textAlign: "center",
   },
 
   teamCard: {
-    background: "#FFFFFF",
-    borderRadius: "20px",
-    padding: "32px 24px 28px",
-    border: "1px solid #F1F5F9",
-    boxShadow: "0 4px 16px rgba(0,0,0,0.04)",
-    textAlign: "center",
-    transition: "transform 0.25s ease, box-shadow 0.25s ease",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
 
   teamImageWrap: {
     width: "120px",
     height: "120px",
     borderRadius: "50%",
-    margin: "0 auto 20px",
-    padding: "4px",
-    background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
-    boxShadow: "0 8px 32px rgba(99,102,241,0.3)",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    overflow: "hidden",
+    marginBottom: "16px",
+    border: "3px solid #F1EFFA",
   },
 
   teamImage: {
     width: "100%",
     height: "100%",
-    borderRadius: "50%",
     objectFit: "cover",
-    display: "block",
-    border: "3px solid #FFFFFF",
   },
 
   teamName: {
-    fontSize: "18px",
-    fontWeight: "700",
-    color: "#0F172A",
-    margin: 0,
-    marginBottom: "4px",
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "15.5px",
+    fontWeight: "800",
+    color: "#1F2937",
+    marginBottom: "2px",
   },
 
   teamRole: {
-    fontSize: "13px",
-    fontWeight: "600",
-    color: "#6366F1",
-    marginBottom: "12px",
-    letterSpacing: "0.02em",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12.5px",
+    fontWeight: "700",
+    color: colors.primary,
+    marginBottom: "10px",
   },
 
   teamBio: {
-    fontSize: "14px",
-    color: "#64748B",
-    lineHeight: 1.65,
-    margin: "0 0 16px",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12.5px",
+    color: "#6B7280",
+    lineHeight: "1.6",
+    marginBottom: "10px",
   },
 
   teamEmail: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "6px",
-    fontSize: "13px",
-    color: "#6366F1",
-    textDecoration: "none",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "11.5px",
     fontWeight: "600",
-    padding: "8px 16px",
-    borderRadius: "10px",
-    background: "linear-gradient(135deg, #EEF2FF, #E8F0FE)",
-    border: "1px solid #C7D2FE",
-    transition: "all 0.25s ease",
-    cursor: "pointer",
+    color: colors.primary,
+    textDecoration: "none",
+    background: "#F1EFFA",
+    padding: "6px 12px",
+    borderRadius: "999px",
   },
 
-  /* ===== TECH STACK ===== */
+  /* ===== Tech stack ===== */
+
   techContainer: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "12px",
+    gap: "10px",
+    marginTop: "8px",
   },
 
   techBadge: (color) => ({
     display: "inline-flex",
     alignItems: "center",
     gap: "8px",
+    padding: "9px 16px",
+    borderRadius: "999px",
+    border: "1px solid #E5E7EB",
     background: "#FFFFFF",
-    border: "1px solid #E2E8F0",
-    borderRadius: "100px",
-    padding: "10px 20px",
-    fontSize: "14px",
-    fontWeight: "600",
-    color: "#334155",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
-    transition: "transform 0.2s ease, box-shadow 0.2s ease",
-    cursor: "default",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "13px",
+    fontWeight: "700",
+    color: "#374151",
   }),
 
   techDot: (color) => ({
@@ -401,116 +394,108 @@ export const styles = {
     height: "8px",
     borderRadius: "50%",
     background: color,
-    flexShrink: 0,
+    display: "inline-block",
   }),
 
-  /* ===== CONTACT ===== */
+  /* ===== Contact ===== */
+
   contactCard: {
-    maxWidth: "800px",
-    margin: "0 auto",
-    background: "linear-gradient(135deg, #0F172A 0%, #1E293B 100%)",
-    borderRadius: "28px",
-    padding: "56px 48px",
+    background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.blend} 100%)`,
+    borderRadius: "26px",
+    padding: "48px 32px",
     textAlign: "center",
-    position: "relative",
-    overflow: "hidden",
   },
 
   contactIconLarge: {
-    fontSize: "44px",
-    marginBottom: "16px",
+    fontSize: "36px",
+    marginBottom: "12px",
   },
 
   contactHeading: {
-    fontSize: "28px",
-    fontWeight: "700",
+    fontFamily: "'Sora', sans-serif",
+    fontSize: "26px",
+    fontWeight: "900",
     color: "#FFFFFF",
-    margin: 0,
-    marginBottom: "10px",
+    marginBottom: "8px",
   },
 
   contactSubtitle: {
-    fontSize: "15px",
-    color: "#94A3B8",
-    marginBottom: "40px",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    color: "rgba(255,255,255,.75)",
+    fontSize: "14px",
+    marginBottom: "32px",
   },
 
   contactGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "16px",
-    maxWidth: "700px",
+    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gap: "20px",
+    maxWidth: "800px",
     margin: "0 auto",
+    textAlign: "left",
   },
 
   contactItem: {
     display: "flex",
     alignItems: "flex-start",
-    gap: "14px",
-    background: "rgba(255,255,255,0.05)",
-    borderRadius: "16px",
-    padding: "20px",
-    textAlign: "left",
-    border: "1px solid rgba(255,255,255,0.06)",
+    gap: "12px",
   },
 
   contactItemIcon: {
-    fontSize: "22px",
+    fontSize: "20px",
     flexShrink: 0,
-    marginTop: "2px",
   },
 
   contactLabel: {
-    fontSize: "11px",
-    color: "#64748B",
-    fontWeight: "600",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "11.5px",
+    fontWeight: "700",
+    color: "rgba(255,255,255,.6)",
     textTransform: "uppercase",
     letterSpacing: "0.06em",
-    marginBottom: "6px",
+    marginBottom: "4px",
   },
 
   contactValue: {
-    fontSize: "13px",
-    color: "#E2E8F0",
-    fontWeight: "500",
-    lineHeight: 1.5,
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "13.5px",
+    color: "#FFFFFF",
   },
 
   contactLink: {
-    color: "#A5B4FC",
-    textDecoration: "none",
-    fontSize: "13px",
-    fontWeight: "500",
-    transition: "color 0.2s",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "13.5px",
+    color: "#FFFFFF",
+    textDecoration: "underline",
   },
 
-  /* ===== FOOTER ===== */
+  /* ===== Footer ===== */
+
   footer: {
-    borderTop: "1px solid #F1F5F9",
-    background: "#FFFFFF",
+    background: "#1F2937",
+    padding: "28px 32px",
   },
 
   footerInner: {
-    maxWidth: "880px",
+    maxWidth: "1180px",
     margin: "0 auto",
-    padding: "32px 24px",
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
-    gap: "16px",
+    alignItems: "center",
     flexWrap: "wrap",
+    gap: "10px",
   },
 
   footerBrand: {
-    fontSize: "18px",
+    fontFamily: "'Sora', sans-serif",
     fontWeight: "800",
-    background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
+    color: "#FFFFFF",
+    fontSize: "15px",
   },
 
   footerText: {
-    fontSize: "13px",
-    color: "#94A3B8",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "12.5px",
+    color: "rgba(255,255,255,.5)",
   },
 };

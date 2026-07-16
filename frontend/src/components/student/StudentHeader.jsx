@@ -36,9 +36,9 @@ export default function StudentHeader() {
           style={{ ...styles.navList, ...(menuOpen ? styles.navListOpen : {}) }}
         >
           <li><NavLink to="/student/dashboard" style={linkStyle} onClick={() => setMenuOpen(false)}>Home</NavLink></li>
-          <li><NavLink to="/student/universities" style={linkStyle} onClick={() => setMenuOpen(false)}>University</NavLink></li>
-          <li><NavLink to="/student/careers" style={linkStyle} onClick={() => setMenuOpen(false)}>Career</NavLink></li>
-          <li><NavLink to="/student/majors" style={linkStyle} onClick={() => setMenuOpen(false)}>Major</NavLink></li>
+          <li><NavLink to="/student/features" style={linkStyle} onClick={() => setMenuOpen(false)}>Features</NavLink></li>
+          <li><NavLink to="/student/search" style={linkStyle} onClick={() => setMenuOpen(false)}>Search</NavLink></li>
+          <li><NavLink to="/student/about" style={linkStyle} onClick={() => setMenuOpen(false)}>About Us</NavLink></li>
           <li><Link to="/student/about#contact" style={styles.navLink} onClick={() => setMenuOpen(false)}>Chat with us</Link></li>
         </ul>
 

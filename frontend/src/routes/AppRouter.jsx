@@ -14,17 +14,17 @@ import Unauthorized from "../pages/Unauthorized";
 import SuperAdminUsers from "../pages/admin/SuperAdminUsers";
 import SuperAdminPanel from "../pages/admin/SuperAdminPanel";
 import ActivityLogs from "../pages/admin/ActivityLogs";
-import AboutUs from "../pages/about/AboutUs";
+import AboutUs from "../pages/student/AboutUs";
+import StudentAboutUs from "../pages/student/AboutUs";
 import AdminUniversities from "../pages/admin/AdminUniversities";
 import AdminMajors from "../pages/admin/AdminMajors";
 import AdminCareers from "../pages/admin/AdminCareers";
 import AdminUniversityMajors from "../pages/admin/AdminUniversityMajors";
 import AdminCareerSkills from "../pages/admin/AdminCareerSkills";
 import AdminMajorCareers from "../pages/admin/AdminMajorCareers";
-import Universities from "../pages/student/Universities";
 import StudentDashboard from "../pages/student/StudentDashboard";
-import Careers from "../pages/student/Careers";
-import Majors from "../pages/student/Majors";
+import Features from "../pages/student/Features";
+import Search from "../pages/student/Search";
 
 // React Router doesn't auto-scroll to a #hash on client-side navigation.
 // This makes links like "/about#contact" actually land on that section.
@@ -72,12 +72,18 @@ export default function AppRoutes() {
         <Route path="/admin/careers" element={<AdminCareers />}/>
         <Route path="/admin/university-majors" element={<AdminUniversityMajors/>}/>
         <Route path="/admin/career-skills" element={<AdminCareerSkills />}/>
-        <Route  path="/admin/major-careers"  element={<AdminMajorCareers/>}/>
+        <Route path="/admin/major-careers"  element={<AdminMajorCareers/>}/>
         <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={[2]}><StudentDashboard /></ProtectedRoute>}/>
-        <Route path="/student/universities" element={<ProtectedRoute allowedRoles={[2]}><Universities /></ProtectedRoute>}/>
-        <Route path="/student/careers" element={<ProtectedRoute allowedRoles={[2]}><Careers /></ProtectedRoute>}/>
-        <Route path="/student/majors" element={<ProtectedRoute allowedRoles={[2]}><Majors /></ProtectedRoute>}/>
+        <Route path="/student/features" element={<ProtectedRoute allowedRoles={[2]}><Features /></ProtectedRoute>}/>
+        <Route path="/student/search" element={<ProtectedRoute allowedRoles={[2]}><Search /></ProtectedRoute>}/>
+        <Route path="/student/about" element={<ProtectedRoute allowedRoles={[2]}><StudentAboutUs /></ProtectedRoute>}/>
+        {/* Old routes redirect so any existing bookmarks/links still work */}
+        <Route path="/student/universities" element={<Navigate to="/student/features" replace />}/>
+        <Route path="/student/careers" element={<Navigate to="/student/features" replace />}/>
+        <Route path="/student/majors" element={<Navigate to="/student/features" replace />}/>
 
+        {/* Anything else: show something instead of a silent blank page */}
+        <Route path="*" element={<Navigate to="/unauthorized" replace />} />
 
       </Routes>
     </BrowserRouter>

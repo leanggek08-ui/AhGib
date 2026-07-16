@@ -6,7 +6,7 @@ function getToken() {
 
 export const careerService = {
   async getAllCareers() {
-    const res = await fetch(`${BASE_URL}/careers`, {
+    const res = await fetch(`${BASE_URL}/career`, {
       headers: {
         Authorization: `Bearer ${getToken()}`
       }

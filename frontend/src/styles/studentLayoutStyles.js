@@ -148,16 +148,41 @@ export const styles = {
   /* ================= Footer ================= */
 
   footer: {
-    background: "#1B1030",
+    background: "#0F0A1F",
     color: "#D9D4EC",
-    padding: "40px 0 24px",
+    padding: "56px 0 28px",
   },
 
   footerInner: {
     maxWidth: "1180px",
     margin: "0 auto",
     padding: "0 32px",
-    textAlign: "center",
+  },
+
+  footerTop: {
+    display: "grid",
+    gridTemplateColumns: "1.4fr 1fr 1fr 1fr",
+    gap: "32px",
+    marginBottom: "44px",
+  },
+
+  footerBrandRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    marginBottom: "16px",
+  },
+
+  footerBrandIcon: {
+    width: "34px",
+    height: "34px",
+    borderRadius: "10px",
+    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "15px",
+    flexShrink: 0,
   },
 
   footerLogo: {
@@ -165,23 +190,46 @@ export const styles = {
     fontWeight: "800",
     fontSize: "19px",
     color: colors.white,
-    marginBottom: "10px",
   },
 
   footerTag: {
     fontSize: "13.5px",
-    color: "#A79DC4",
-    maxWidth: "420px",
-    margin: "0 auto 20px",
-    lineHeight: "1.6",
+    color: "#8C82AC",
+    maxWidth: "300px",
+    lineHeight: "1.7",
+    marginBottom: "20px",
   },
 
-  footerLinks: {
+  footerSocialRow: {
     display: "flex",
+    gap: "10px",
+  },
+
+  footerSocialIcon: {
+    width: "34px",
+    height: "34px",
+    borderRadius: "50%",
+    background: "rgba(255,255,255,.06)",
+    display: "flex",
+    alignItems: "center",
     justifyContent: "center",
-    gap: "22px",
-    flexWrap: "wrap",
-    marginBottom: "22px",
+    fontSize: "13px",
+    color: "#8C82AC",
+  },
+
+  footerColTitle: {
+    fontSize: "11.5px",
+    fontWeight: "800",
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    color: "#6E6390",
+    marginBottom: "18px",
+  },
+
+  footerColLinks: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "13px",
   },
 
   footerLink: {
@@ -191,10 +239,22 @@ export const styles = {
     textDecoration: "none",
   },
 
+  footerLinkDisabled: {
+    fontSize: "13.5px",
+    fontWeight: "600",
+    color: "#5A5178",
+    cursor: "default",
+  },
+
   footerBottom: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "10px",
     fontSize: "12.5px",
-    color: "#8C7FB5",
+    color: "#6E6390",
     borderTop: "1px solid rgba(255,255,255,.08)",
-    paddingTop: "18px",
+    paddingTop: "22px",
   },
 };
