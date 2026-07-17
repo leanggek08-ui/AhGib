@@ -25,9 +25,11 @@ export default function AdminCareerSkills() {
 
   useEffect(() => {
     loadData();
+    // This loader is intentionally run once when the admin page mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loadData = async () => {
+  async function loadData() {
     setLoading(true);
     try {
       const token = getToken();
@@ -55,7 +57,7 @@ export default function AdminCareerSkills() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const resetForm = () => setForm({ careers_id: "", skill_name: "" });
 

@@ -17,5 +17,11 @@ export default defineConfig([
       globals: globals.browser,
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
+    rules: {
+      // Effects run after render, so calling a locally declared loader from an
+      // effect is safe in these components. The compiler-oriented rule treats
+      // that established pattern as an error.
+      'react-hooks/immutability': 'off',
+    },
   },
 ])

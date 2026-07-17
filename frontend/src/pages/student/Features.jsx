@@ -132,18 +132,29 @@ function UniversitySearchPanel() {
   async function loadAll() {
     try {
       setLoading(true);
-      const [u, m, um, c, mc] = await Promise.all([
+      setError("");
+      const results = await Promise.allSettled([
         universityService.getAllUniversities(),
         majorService.getAllMajors(),
         uniMajorService.getAllUniMajors(),
         careerService.getAllCareers(),
         majorCareerService.getAllMajorCareers(),
       ]);
-      setUniversities(u);
-      setMajors(m);
-      setUniMajors(um);
-      setCareers(c);
-      setMajorCareers(mc);
+
+      const [universityResult, majorResult, uniMajorResult, careerResult, majorCareerResult] =
+        results;
+
+      if (universityResult.status === "rejected") {
+        throw universityResult.reason;
+      }
+
+      setUniversities(universityResult.value);
+      setMajors(majorResult.status === "fulfilled" ? majorResult.value : []);
+      setUniMajors(uniMajorResult.status === "fulfilled" ? uniMajorResult.value : []);
+      setCareers(careerResult.status === "fulfilled" ? careerResult.value : []);
+      setMajorCareers(
+        majorCareerResult.status === "fulfilled" ? majorCareerResult.value : [],
+      );
     } catch (err) {
       setError(err.message || "Failed to load university data.");
     } finally {
@@ -293,14 +304,16 @@ function UniversitySearchPanel() {
         ))}
       </div>
 
-      <span style={styles.countBadge}>
-        <span style={styles.countNum}>{filtered.length}</span> universit
-        {filtered.length !== 1 ? "ies" : "y"} found
-      </span>
+      {!error && (
+        <span style={styles.countBadge}>
+          <span style={styles.countNum}>{filtered.length}</span> universit
+          {filtered.length !== 1 ? "ies" : "y"} found
+        </span>
+      )}
 
       <ErrorBox message={error} styles={errorBoxStyle} />
 
-      {loading ? (
+      {error ? null : loading ? (
         <div style={styles.grid}>
           {[...Array(6)].map((_, i) => (
             <div key={i} style={styles.skeletonCard} />
@@ -383,7 +396,7 @@ const SUBJECTS = [
 
 function AssessmentPanel() {
   const [step, setStep] = useState("intro");
-  const [assId, setAssId] = useState(null); 
+  const [assId, setAssId] = useState(null);
   const [academicScores, setAcademicScores] = useState({});
   const [academicError, setAcademicError] = useState("");
   const [questions, setQuestions] = useState([]);
@@ -391,6 +404,7 @@ function AssessmentPanel() {
   const [answers, setAnswers] = useState({});
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
+  const [savingAnswer, setSavingAnswer] = useState(false);
 
   function updateScore(key, value) {
     setAcademicScores((prev) => ({ ...prev, [key]: value }));
@@ -450,21 +464,33 @@ function AssessmentPanel() {
   }
 
   async function goNext() {
+    if (savingAnswer) return;
+
     const q = questions[current];
     const score = answers[q.question_id];
+    const answerLabel =
+      LIKERT_OPTIONS.find((option) => option.score === score)?.label || null;
 
+    setSavingAnswer(true);
     try {
-      await assessmentService.submitAnswer(assId, q.question_id, score);
+      await assessmentService.submitAnswer(
+        assId,
+        q.question_id,
+        score,
+        answerLabel,
+      );
     } catch (err) {
-      // Non-fatal: don't block the quiz UX on a single write failure,
-      // but surface it so it's not silently lost.
-      console.error("Failed to save answer:", err.message);
+      setError(err.message || "Failed to save your answer.");
+      setStep("error");
+      setSavingAnswer(false);
+      return;
     }
 
     if (current < questions.length - 1) {
       setCurrent(current + 1);
+      setSavingAnswer(false);
     } else {
-      submitAnswers();
+      await analyzeCompletedAssessment();
     }
   }
 
@@ -472,32 +498,19 @@ function AssessmentPanel() {
     if (current > 0) setCurrent(current - 1);
   }
 
-  async function submitAnswers() {
+  async function analyzeCompletedAssessment() {
     try {
       setStep("submitting");
 
       await assessmentService.completeAssessment(assId);
-
-      const responses = questions.map((q) => {
-        const score = answers[q.question_id];
-        const label =
-          LIKERT_OPTIONS.find((opt) => opt.score === score)?.label || null;
-        return {
-          question: q.question_text,
-          subject: q.subject,
-          answer_score: score,
-          answer_label: label,
-        };
-      });
-
-      const studentProfile = { academic_scores: academicScores, responses };
-
-      const result = await assessmentService.getRecommendation(studentProfile);
+      const result = await assessmentService.analyzeAssessment(assId);
       setReport(result.data);
       setStep("report");
     } catch (err) {
       setError(err.message || "Failed to generate your career report.");
       setStep("error");
+    } finally {
+      setSavingAnswer(false);
     }
   }
 
@@ -507,6 +520,7 @@ function AssessmentPanel() {
     setAcademicScores({});
     setAcademicError("");
     setAssId(null);        // NEW — reset so retake creates a fresh assessment
+    setSavingAnswer(false);
     setStep("intro");
   }
 
@@ -642,12 +656,16 @@ function AssessmentPanel() {
           <button
             style={{
               ...styles.navBtnPrimary,
-              ...(!answered ? styles.navBtnDisabled : {}),
+              ...(!answered || savingAnswer ? styles.navBtnDisabled : {}),
             }}
             onClick={goNext}
-            disabled={!answered}
+            disabled={!answered || savingAnswer}
           >
-            {current === questions.length - 1 ? "See My Results" : "Next"}
+            {savingAnswer
+              ? "Saving..."
+              : current === questions.length - 1
+                ? "See My Results"
+                : "Next"}
           </button>
         </div>
       </div>
@@ -657,7 +675,6 @@ function AssessmentPanel() {
   if (step === "report" && report) {
     return (
       <div style={styles.assessmentCard}>
-        <div style={styles.assessmentIntroIcon}>🎯</div>
         <div style={styles.assessmentTitle}>Your Career Report</div>
 
         {report.summary && (
@@ -739,12 +756,16 @@ function AssessmentPanel() {
           </>
         )}
 
-        {report.roadmap && (
+        {report.roadmap?.length > 0 && (
           <>
             <div style={{ ...styles.reportSectionTitle, marginTop: "20px" }}>
               Your Roadmap
             </div>
-            <p style={styles.assessmentText}>{report.roadmap}</p>
+            <ol style={styles.assessmentText}>
+              {report.roadmap.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ol>
           </>
         )}
 

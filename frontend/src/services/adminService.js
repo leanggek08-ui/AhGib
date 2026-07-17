@@ -1,5 +1,5 @@
-import request from "./request"; // your existing fetch wrapper
+import { apiRequest } from "./apiClient";
 
 export const adminService = {
-  getDashboard: () => request("/admin/dashboard"),
+  getDashboard: () => apiRequest("/admin"),
 };

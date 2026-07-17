@@ -1,62 +1,26 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { apiRequest } from "./apiClient";
 
-function getToken() {
-  return localStorage.getItem("token");
-}
+const UNIVERSITY_ENDPOINT = "/api/universities";
 
 export const universityService = {
-  async getAllUniversities() {
-    const res = await fetch(`${BASE_URL}/universities`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`
-      }
-    });
-
-    if (!res.ok) throw new Error("Failed to load universities");
-
-    return res.json();
+  getAllUniversities: async () => {
+    const response = await apiRequest(UNIVERSITY_ENDPOINT, { auth: false });
+    return response.data;
   },
-
-  async createUniversity(data) {
-    const res = await fetch(`${BASE_URL}/universities`, {
+  createUniversity: async (data) => {
+    const response = await apiRequest(UNIVERSITY_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify(data)
+      body: data,
     });
-
-    if (!res.ok) throw new Error("Failed to create university");
-
-    return res.json();
+    return response.data;
   },
-
-  async updateUniversity(id, data) {
-    const res = await fetch(`${BASE_URL}/universities/${id}`, {
+  updateUniversity: async (id, data) => {
+    const response = await apiRequest(`${UNIVERSITY_ENDPOINT}/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${getToken()}`
-      },
-      body: JSON.stringify(data)
+      body: data,
     });
-
-    if (!res.ok) throw new Error("Failed to update university");
-
-    return res.json();
+    return response.data;
   },
-
-  async deleteUniversity(id) {
-    const res = await fetch(`${BASE_URL}/universities/${id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${getToken()}`
-      }
-    });
-
-    if (!res.ok) throw new Error("Failed to delete university");
-
-    return res.json();
-  }
+  deleteUniversity: (id) =>
+    apiRequest(`${UNIVERSITY_ENDPOINT}/${id}`, { method: "DELETE" }),
 };

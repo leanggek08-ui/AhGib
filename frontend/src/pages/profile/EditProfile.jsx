@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { userService } from "../../services/userService";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 export default function EditProfile() {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);

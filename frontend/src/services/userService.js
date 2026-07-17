@@ -1,43 +1,11 @@
-const BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-
-
-
-async function request(path, method = "GET", body = null) {
-  const token = localStorage.getItem("token");
-
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: body ? JSON.stringify(body) : null,
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data.message || data.error || "Request failed");
-  }
-
-  return data;
-}
+import { apiRequest } from "./apiClient";
 
 export const userService = {
-  // profile (already used)
-  getProfile: () => request("/users/profile"),
-
+  getProfile: () => apiRequest("/users/profile"),
   updateProfile: (username) =>
-    request("/users/profile", "PUT", { username }),
-
-  // ADMIN USERS
-  getAllUsers: () => request("/users"),
-  // Delete user
-  deleteUser: (id) => request(`/users/${id}`, "DELETE"),
-  //update user
+    apiRequest("/users/profile", { method: "PUT", body: { username } }),
+  getAllUsers: () => apiRequest("/users"),
+  deleteUser: (id) => apiRequest(`/users/${id}`, { method: "DELETE" }),
   updateUser: (id, data) =>
-  request(`/users/${id}`, "PUT", data),
-
+    apiRequest(`/users/${id}`, { method: "PUT", body: data }),
 };

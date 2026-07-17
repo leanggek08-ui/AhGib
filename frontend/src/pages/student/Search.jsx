@@ -30,6 +30,7 @@ export default function Search() {
   async function loadAll() {
     try {
       setLoading(true);
+      setError("");
       const [u, m, um, c, mc] = await Promise.all([
         universityService.getAllUniversities(),
         majorService.getAllMajors(),
@@ -135,7 +136,7 @@ export default function Search() {
 
         <ErrorBox message={error} styles={errorBoxStyle} />
 
-        {loading ? (
+        {error ? null : loading ? (
           <div style={styles.grid}>
             {[...Array(6)].map((_, i) => (
               <div

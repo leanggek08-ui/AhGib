@@ -56,10 +56,8 @@ export default function AppRoutes() {
         <Route  path="/about" element={<AboutUs />}/>
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/profile" element={<ProtectedRoute allowedRoles={[1,2]}><Profile /></ProtectedRoute>}/>
-        <Route path="/profile/edit" element={<EditProfile />} />
-        <Route  path="/about" element={<AboutUs />}/>
-        <Route path="/admin/dashboard" element={<AdminDashboard />}/>
+        <Route path="/profile" element={<ProtectedRoute allowedRoles={[1,2,3]}><Profile /></ProtectedRoute>}/>
+        <Route path="/profile/edit" element={<ProtectedRoute allowedRoles={[1,2,3]}><EditProfile /></ProtectedRoute>} />
         <Route path="/admin/users" element={ <ProtectedRoute allowedRoles={[1,3]}> <Users /></ProtectedRoute> }/>
         <Route path="/admin/questions" element={ <ProtectedRoute allowedRoles={[1,3]}>  <Questions /></ProtectedRoute>}/>
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -67,12 +65,12 @@ export default function AppRoutes() {
         <Route path="/admin/super-users" element={<ProtectedRoute allowedRoles={[3]}><SuperAdminUsers /></ProtectedRoute>}/>
         <Route path="/admin/super" element={ <ProtectedRoute allowedRoles={[3]}><SuperAdminPanel /></ProtectedRoute>}/>
         <Route path="/admin/activity" element={<ProtectedRoute allowedRoles={[3]}> <ActivityLogs /></ProtectedRoute>}/>
-        <Route path="/admin/universities" element={<AdminUniversities/>}/>
-        <Route path="/admin/majors" element={<AdminMajors/>}/>
-        <Route path="/admin/careers" element={<AdminCareers />}/>
-        <Route path="/admin/university-majors" element={<AdminUniversityMajors/>}/>
-        <Route path="/admin/career-skills" element={<AdminCareerSkills />}/>
-        <Route path="/admin/major-careers"  element={<AdminMajorCareers/>}/>
+        <Route path="/admin/universities" element={<ProtectedRoute allowedRoles={[1,3]}><AdminUniversities/></ProtectedRoute>}/>
+        <Route path="/admin/majors" element={<ProtectedRoute allowedRoles={[1,3]}><AdminMajors/></ProtectedRoute>}/>
+        <Route path="/admin/careers" element={<ProtectedRoute allowedRoles={[1,3]}><AdminCareers /></ProtectedRoute>}/>
+        <Route path="/admin/university-majors" element={<ProtectedRoute allowedRoles={[1,3]}><AdminUniversityMajors/></ProtectedRoute>}/>
+        <Route path="/admin/career-skills" element={<ProtectedRoute allowedRoles={[1,3]}><AdminCareerSkills /></ProtectedRoute>}/>
+        <Route path="/admin/major-careers" element={<ProtectedRoute allowedRoles={[1,3]}><AdminMajorCareers/></ProtectedRoute>}/>
         <Route path="/student/dashboard" element={<ProtectedRoute allowedRoles={[2]}><StudentDashboard /></ProtectedRoute>}/>
         <Route path="/student/features" element={<ProtectedRoute allowedRoles={[2]}><Features /></ProtectedRoute>}/>
         <Route path="/student/search" element={<ProtectedRoute allowedRoles={[2]}><Search /></ProtectedRoute>}/>

@@ -25,17 +25,19 @@ export default function AdminUniversityMajors() {
 
   useEffect(() => {
     loadData();
+    // This loader is intentionally run once when the admin page mounts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getToken = () => localStorage.getItem("token");
 
-  const loadData = async () => {
+  async function loadData() {
     setLoading(true);
     try {
       const token = getToken();
 
       const [uniRes, majorRes, relationRes] = await Promise.all([
-        fetch(`${BASE_URL}/universities`, {
+        fetch(`${BASE_URL}/api/universities`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
         fetch(`${BASE_URL}/major`, {
@@ -54,7 +56,7 @@ export default function AdminUniversityMajors() {
       const majorData = await majorRes.json();
       const relationData = await relationRes.json();
 
-      setUniversities(uniData);
+      setUniversities(uniData.data || []);
       setMajors(majorData);
       setAssignments(relationData);
     } catch (err) {
@@ -62,7 +64,7 @@ export default function AdminUniversityMajors() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const resetForm = () =>
     setForm({ university_id: "", major_id: "", tuition_fee: "" });

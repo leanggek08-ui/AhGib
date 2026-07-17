@@ -1,44 +1,32 @@
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
-function getToken() {
-  return localStorage.getItem("token");
-}
-
-async function request(path, body, method = "POST") {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${getToken()}`,
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  const data = await res.json().catch(() => ({}));
-
-  if (!res.ok) {
-    throw new Error(data.error || data.message || "Request failed");
-  }
-
-  return data;
-}
+import { apiRequest } from "./apiClient";
 
 export const assessmentService = {
   getRecommendation: (studentProfile) =>
-    request("/assessments/recommendation", studentProfile),
-
-  chat: (messages) => request("/assessments/chat", { messages }),
-
-  createAssessment: (user_id) => request("/assessments", { user_id }),
-
+    apiRequest("/assessments/recommendation", {
+      method: "POST",
+      body: studentProfile,
+    }),
+  chat: (messages) =>
+    apiRequest("/assessments/chat", { method: "POST", body: { messages } }),
+  createAssessment: (user_id) =>
+    apiRequest("/assessments", { method: "POST", body: { user_id } }),
   submitAnswer: (ass_id, question_id, answer_value, answer_text = null) =>
-    request("/answers", { ass_id, question_id, answer_value, answer_text }),
-
+    apiRequest("/answers", {
+      method: "POST",
+      body: { ass_id, question_id, answer_value, answer_text },
+    }),
   completeAssessment: (ass_id) =>
-    request(`/assessments/${ass_id}/complete`, null, "PUT"),
-
+    apiRequest(`/assessments/${ass_id}/complete`, { method: "PUT" }),
+  analyzeAssessment: (assessment_id) =>
+    apiRequest("/api/ai/analyze-assessment", {
+      method: "POST",
+      body: { assessment_id },
+    }),
   saveAcademicScores: (ass_id, scores) =>
-    request("/academic-scores", { ass_id, scores }),
+    apiRequest("/academic-scores", {
+      method: "POST",
+      body: { ass_id, scores },
+    }),
 };
 
 export const LIKERT_OPTIONS = [

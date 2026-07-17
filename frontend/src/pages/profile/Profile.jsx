@@ -4,9 +4,7 @@ import { styles } from "../../styles/profileStyles";
 import { Link } from "react-router-dom";
 export default function Profile() {
   const [user, setUser] = useState(null);
-  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
   // LOAD PROFILE
@@ -15,7 +13,6 @@ export default function Profile() {
       try {
         const data = await userService.getProfile();
         setUser(data);
-        setUsername(data.username);
       } catch (err) {
         setMessage(err.message);
       } finally {
@@ -26,29 +23,13 @@ export default function Profile() {
     loadProfile();
   }, []);
 
-  // UPDATE PROFILE
-  const handleSave = async () => {
-    setSaving(true);
-    setMessage("");
-
-    try {
-      const updated = await userService.updateProfile(username);
-      setUser(updated);
-      setMessage("Profile updated successfully");
-    } catch (err) {
-      setMessage(err.message);
-    } finally {
-      setSaving(false);
-    }
-  };
-
   if (loading) return <p style={{ color: "white" }}>Loading...</p>;
 
  return (
   <div style={styles.page}>
     <div style={styles.card}>
       <Link
-        to={user?.role_id === 1 || user?.role_id === 3 ? "/admind/dashboard" : "/student/dashboard"}
+        to={user?.role_id === 1 || user?.role_id === 3 ? "/admin/dashboard" : "/student/dashboard"}
         style={styles.backlink}
       >
         ← Back to Dashboard
@@ -68,6 +49,7 @@ export default function Profile() {
 
       {/* INFO */}
       <div style={styles.infoBox}>
+        {message && <p style={{ color: "#ff8a8a" }}>{message}</p>}
         <div style={styles.row}>
           <span style={styles.label}>Email</span>
           <span style={styles.value}>{user?.email}</span>

@@ -381,7 +381,7 @@ export const styles = {
     gap: "8px",
     padding: "9px 16px",
     borderRadius: "999px",
-    border: "1px solid #E5E7EB",
+    border: `1px solid ${color}`,
     background: "#FFFFFF",
     fontFamily: "'Plus Jakarta Sans', sans-serif",
     fontSize: "13px",
