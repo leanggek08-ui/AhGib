@@ -25,12 +25,19 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+}));
 app.use(express.json());
+app.use((req, res, next) => {
+  console.log(`[API] ${req.method} ${req.originalUrl}`);
+  next();
+});
 app.use("/auth", authRoutes);
 app.use("/assessments", assessmentRoutes);
 app.use("/questions", questionRoutes);
-app.use("/universities", universityRoutes);
+app.use("/api/universities", universityRoutes);
 app.use("/major", majorRoutes);
 app.use("/career", careerRoutes);
 app.use("/answers", answerRoutes);
@@ -68,6 +75,30 @@ app.get("/protected", authenticateToken, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.use((req, res) => {
+  res.status(404).json({ message: `API route not found: ${req.method} ${req.path}` });
 });
+
+app.use((error, req, res, next) => {
+  if (error instanceof SyntaxError && error.status === 400 && "body" in error) {
+    return res.status(400).json({ message: "Invalid JSON request body" });
+  }
+
+  console.error("Unhandled API error:", error);
+  return res.status(500).json({ message: "Internal server error" });
+});
+
+async function startServer() {
+  try {
+    await pool.query("SELECT 1");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} (database connected)`);
+      console.log(`University API: http://localhost:${PORT}/api/universities`);
+    });
+  } catch (error) {
+    console.error("Unable to connect to the database:", error.message);
+    process.exitCode = 1;
+  }
+}
+
+startServer();

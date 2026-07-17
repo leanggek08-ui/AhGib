@@ -1,10 +1,11 @@
 import express from "express";
 import pool from "../db/db.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // CREATE score
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
     const { ass_id, subject, score_value } = req.body;
 
@@ -20,7 +21,7 @@ router.post("/", async (req, res) => {
 });
 
 // GET score by assessment
-router.get("/:ass_id", async (req, res) => {
+router.get("/:ass_id", authenticateToken, async (req, res) => {
   try {
     const { ass_id } = req.params;
 

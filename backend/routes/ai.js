@@ -1,7 +1,11 @@
 import express from "express";
 import { chatWithCareerAdvisor } from "../services/groqService.js";
+import { analyzeAssessment } from "../controllers/aiController.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
+
+router.post("/analyze-assessment", authenticateToken, analyzeAssessment);
 
 router.post("/", async (req, res) => {
   const message = typeof req.body?.message === "string"

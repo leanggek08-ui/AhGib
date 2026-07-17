@@ -1,11 +1,12 @@
 import express from "express";
 import pool from "../db/db.js";
 import calculateScore from "../utils/calculateScore.js";
+import authenticateToken from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // Submit answer
-router.post("/", async (req, res) => {
+router.post("/", authenticateToken, async (req, res) => {
   try {
     const { ass_id, question_id, answer_text, answer_value } = req.body;
 
@@ -19,6 +20,10 @@ router.post("/", async (req, res) => {
       `INSERT INTO answer
         (ass_id, question_id, answer_text, answer_value)
        VALUES ($1, $2, $3, $4)
+       ON CONFLICT (ass_id, question_id)
+       DO UPDATE SET
+         answer_text = EXCLUDED.answer_text,
+         answer_value = EXCLUDED.answer_value
        RETURNING *`,
       [ass_id, question_id, answer_text, answer_value],
     );
@@ -36,7 +41,7 @@ router.post("/", async (req, res) => {
 });
 
 // Get answers by assessment
-router.get("/:ass_id", async (req, res) => {
+router.get("/:ass_id", authenticateToken, async (req, res) => {
   try {
     const { ass_id } = req.params;
 

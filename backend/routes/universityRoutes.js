@@ -14,9 +14,9 @@ import { allowRoles } from "../middlewares/roleMiddleware.js";
 const router = express.Router();
 
 // Everyone can view
-router.get("/", authenticateToken, getAllUniversities);
+router.get("/", getAllUniversities);
 
-router.get("/:id", authenticateToken, getUniversityById);
+router.get("/:id", getUniversityById);
 
 // Admin & Super Admin only
 router.post("/", authenticateToken, allowRoles(1, 3), createUniversity);

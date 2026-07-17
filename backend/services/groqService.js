@@ -1,3 +1,10 @@
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const directory = path.dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: path.resolve(directory, "../.env"), quiet: true });
+
 const GROQ_API_URL =
   process.env.GROQ_API_URL || "https://api.groq.com/openai/v1/chat/completions";
 
@@ -61,6 +68,10 @@ async function generateCareerRecommendation(studentProfile) {
         "Each top career should include name, why_it_fits, and future_opportunities.",
         "Each major should include name and reason.",
         "Each university should include name, program, and reason.",
+        "recommended_majors must contain only exact major_name values from available_majors in the supplied profile.",
+        "recommended_universities must contain only exact name values from available_universities in the supplied profile.",
+        "Never invent or rename a university or major.",
+        "roadmap must be an array of practical step strings.",
         "Keep the advice practical, encouraging, and specific to the student profile.",
       ].join(" "),
     },
