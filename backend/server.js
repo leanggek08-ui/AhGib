@@ -17,11 +17,12 @@ import careerSkillRoutes from "./routes/careerSkillRoutes.js";
 import majorCareerRoutes from "./routes/majorCareerRoutes.js";
 import academicScoreRoutes from "./routes/academicScore.js";
 import dotenv from "dotenv";
+import aiRoutes from "./routes/ai.js";
 import pool from "./db/db.js";
 const app = express();
 
-const PORT = process.env.PORT || 5000;
 dotenv.config();
+const PORT = process.env.PORT || 5000;
 
 
 app.use(cors());
@@ -41,6 +42,7 @@ app.use("/uni-major", uniMajorRoutes);
 app.use( "/career-skill", careerSkillRoutes);
 app.use("/major-career", majorCareerRoutes);
 app.use("/academic-scores", academicScoreRoutes);
+app.use("/api/ai", aiRoutes);
 
 
 
