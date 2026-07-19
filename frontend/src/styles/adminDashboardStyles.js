@@ -1,129 +1,136 @@
-// adminDashboardStyles.js — dark navy/indigo theme
+// adminDashboardStyles.js — AhGib admin theme: warm paper, teal + amber
 
 export const styles = {
+  page: {
+    fontFamily: "'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif",
+  },
+
+  headerRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginBottom: "28px",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+
   pageTitle: {
-    fontSize: "28px",
-    fontWeight: "700",
-    color: "#F9FAFB",
-    marginBottom: "6px",
+    fontFamily: "'Baloo 2', 'Plus Jakarta Sans', sans-serif",
+    fontSize: "22px",
+    fontWeight: "600",
+    color: "#232620",
+    margin: "0 0 4px",
   },
 
   subtitle: {
-    color: "#9CA3AF",
-    marginBottom: "32px",
-    fontSize: "15px",
+    color: "#8A8576",
+    fontSize: "13.5px",
+  },
+
+  lastUpdated: {
+    fontSize: "12.5px",
+    color: "#B0AA98",
   },
 
   loadingText: {
-    color: "#E5E7EB",
-    fontSize: "15px",
+    color: "#8A8576",
+    fontSize: "14px",
   },
 
   emptyText: {
-    color: "#6B7280",
-    fontSize: "14px",
-    padding: "12px 0",
+    color: "#B0AA98",
+    fontSize: "13.5px",
+    padding: "20px 0",
   },
 
   cards: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))",
-    gap: "24px",
-    marginBottom: "36px",
+    gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+    gap: "14px",
+    marginBottom: "28px",
   },
 
   card: {
-    background: "#1E2333",
-    borderRadius: "18px",
-    padding: "24px",
-    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
-    border: "1px solid #2B3245",
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    position: "relative",
-    overflow: "hidden",
-  },
-
-  cardTopRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-  },
-
-  cardIconWrap: (color) => ({
-    width: "48px",
-    height: "48px",
+    background: "#FFFFFF",
+    border: "1px solid #EAE5D8",
     borderRadius: "14px",
-    background: `${color}26`,
+    padding: "18px 20px",
+    display: "flex",
+    alignItems: "center",
+    gap: "14px",
+  },
+
+  cardIconWrap: {
+    width: "38px",
+    height: "38px",
+    borderRadius: "10px",
+    background: "#0F6E5614",
+    color: "#0F6E56",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "22px",
-  }),
-
-  trendBadge: (positive) => ({
-    fontSize: "12px",
-    fontWeight: "700",
-    padding: "4px 10px",
-    borderRadius: "20px",
-    background: positive ? "#064E3B" : "#4C0519",
-    color: positive ? "#6EE7B7" : "#FCA5A5",
-  }),
+    flexShrink: 0,
+    fontSize: "18px",
+  },
 
   cardTitle: {
-    color: "#9CA3AF",
-    fontSize: "14px",
+    color: "#8A8576",
+    fontSize: "12.5px",
     fontWeight: "500",
   },
 
   cardValue: {
-    fontSize: "32px",
-    fontWeight: "800",
-    color: "#F9FAFB",
-    lineHeight: 1,
+    fontFamily: "'Baloo 2', sans-serif",
+    fontSize: "22px",
+    fontWeight: "600",
+    color: "#232620",
+    lineHeight: 1.1,
   },
-
-  cardAccentBar: (color) => ({
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "4px",
-    background: color,
-  }),
 
   grid: {
     display: "grid",
     gridTemplateColumns: "2fr 1fr",
-    gap: "24px",
+    gap: "18px",
   },
 
   section: {
-    background: "#1E2333",
-    borderRadius: "18px",
-    padding: "24px",
-    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
-    border: "1px solid #2B3245",
+    background: "#FFFFFF",
+    border: "1px solid #EAE5D8",
+    borderRadius: "14px",
+    padding: "20px 22px",
   },
-
   sectionHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "20px",
+    marginBottom: "14px",
   },
 
+  toggleBtn: (hover) => ({
+    background: hover
+      ? "#6733B9"
+      : "linear-gradient(90deg, #5313C0, #6C1EB1, #6733B9)",
+    color: "#FFFFFF",
+    border: "none",
+    borderRadius: "8px",
+    padding: "6px 14px",
+    fontSize: "12.5px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "background 0.15s ease",
+  }),
+
   sectionTitle: {
-    fontSize: "18px",
-    fontWeight: "700",
-    color: "#F9FAFB",
+    fontFamily: "'Baloo 2', sans-serif",
+    fontSize: "15px",
+    fontWeight: "600",
+    color: "#232620",
     margin: 0,
   },
 
   viewAll: {
-    fontSize: "13px",
-    color: "#818CF8",
+    fontSize: "12.5px",
+    color: "#0F6E56",
     fontWeight: "600",
     cursor: "pointer",
   },
@@ -131,56 +138,110 @@ export const styles = {
   activity: {
     display: "flex",
     alignItems: "center",
-    gap: "14px",
-    padding: "14px 0",
-    borderBottom: "1px solid #2B3245",
+    gap: "12px",
+    padding: "13px 0",
+    borderBottom: "1px solid #F2EFE6",
   },
 
-  activityIcon: (color) => ({
-    width: "38px",
-    height: "38px",
-    borderRadius: "10px",
-    background: `${color}26`,
+  activityIcon: {
+    width: "30px",
+    height: "30px",
+    borderRadius: "50%",
+    background: "#0F6E5614",
+    color: "#0F6E56",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "16px",
     flexShrink: 0,
-  }),
+    fontSize: "14px",
+  },
 
   activityText: {
-    fontSize: "14.5px",
-    color: "#E5E7EB",
-    fontWeight: "500",
+    fontSize: "13.5px",
+    color: "#232620",
     flex: 1,
   },
 
   activityTime: {
-    fontSize: "12.5px",
-    color: "#9CA3AF",
+    fontSize: "12px",
+    color: "#B0AA98",
+    whiteSpace: "nowrap",
   },
 
   quickPanel: {
     display: "flex",
     flexDirection: "column",
-    gap: "16px",
+    gap: "12px",
   },
 
   quickCard: {
-    background: "linear-gradient(135deg, #4F46E5, #6366F1)",
-    borderRadius: "18px",
-    padding: "22px",
-    color: "#fff",
+    background: "#FFFFFF",
+    border: "1px solid #EAE5D8",
+    borderRadius: "14px",
+    padding: "18px 20px",
   },
 
-  quickCardTitle: {
-    fontSize: "14px",
-    opacity: 0.85,
+  statusRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "7px",
     marginBottom: "6px",
   },
 
+  statusDot: (color) => ({
+    width: "7px",
+    height: "7px",
+    borderRadius: "50%",
+    background: color,
+  }),
+
+  quickCardTitle: {
+    fontSize: "12.5px",
+    color: "#8A8576",
+    fontWeight: "500",
+  },
+
   quickCardValue: {
-    fontSize: "26px",
-    fontWeight: "800",
+    fontFamily: "'Baloo 2', sans-serif",
+    fontSize: "17px",
+    fontWeight: "600",
+    color: "#232620",
+  },
+
+  // adminDashboardStyles.js — add these
+
+  quickActionsGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))",
+    gap: "10px",
+  },
+
+  quickActionBtn: (hover) => ({
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    padding: "14px 16px",
+    borderRadius: "12px",
+    border: "1px solid #EAE5D8",
+    background: hover ? "#F6F4EF" : "#FFFFFF",
+    cursor: "pointer",
+    fontSize: "13.5px",
+    fontWeight: "500",
+    color: "#232620",
+    textAlign: "left",
+    transition: "background 0.12s ease",
+  }),
+
+  quickActionIcon: {
+    width: "30px",
+    height: "30px",
+    borderRadius: "8px",
+    background: "#0F6E5614",
+    color: "#0F6E56",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+    fontSize: "15px",
   },
 };

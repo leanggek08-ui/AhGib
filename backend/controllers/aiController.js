@@ -158,7 +158,7 @@ export async function analyzeAssessment(req, res) {
     }
 
     const expectedAnswerCount = questionCountResult.rows[0].count;
-    if (answersResult.rowCount < expectedAnswerCount) {
+    if (answersResult.rowCount < expectedAnswerCount && assessment.status !== "completed") {
       return res.status(400).json({
         success: false,
         message: `Assessment is incomplete: found ${answersResult.rowCount} of ${expectedAnswerCount} answers`,

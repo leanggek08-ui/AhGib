@@ -1,89 +1,98 @@
-// superAdminStyles.js — matches the navy/indigo AhGib admin theme
+// superAdminStyles.js — warm paper theme, matches rest of admin panel
 
 export const styles = {
   headerRow: {
     display: "flex",
     alignItems: "center",
     gap: "16px",
-    marginBottom: "32px",
+    marginBottom: "28px",
   },
 
   shieldBadge: {
-    width: "56px",
-    height: "56px",
-    borderRadius: "16px",
-    background: "linear-gradient(135deg, #4F46E5, #6366F1)",
+    width: "48px",
+    height: "48px",
+    borderRadius: "14px",
+    background: "#5313C014",
+    color: "#5313C0",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "26px",
     flexShrink: 0,
   },
 
   pageTitle: {
-    fontSize: "26px",
-    fontWeight: "700",
-    color: "#F9FAFB",
+    fontFamily: "'Baloo 2', 'Plus Jakarta Sans', sans-serif",
+    fontSize: "22px",
+    fontWeight: "600",
+    color: "#232620",
     margin: 0,
     marginBottom: "4px",
   },
 
   subtitle: {
-    color: "#9CA3AF",
-    fontSize: "15px",
+    color: "#8A8576",
+    fontSize: "13.5px",
     margin: 0,
   },
 
   grid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
-    gap: "20px",
+    gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))",
+    gap: "16px",
   },
 
-  card: {
-    background: "#1E2333",
-    borderRadius: "18px",
-    padding: "24px",
-    boxShadow: "0 8px 24px rgba(0,0,0,.35)",
-    border: "1px solid #2B3245",
-    position: "relative",
-    overflow: "hidden",
-    transition: "transform 0.15s ease, border-color 0.15s ease",
-  },
-
-  cardAccentBar: (color) => ({
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "4px",
-    background: color,
+  card: (hover) => ({
+    background: "#FFFFFF",
+    borderRadius: "14px",
+    padding: "22px",
+    border: `1px solid ${hover ? "#5313C044" : "#EAE5D8"}`,
+    cursor: "pointer",
+    transition: "border-color 0.15s ease",
   }),
 
-  cardIconWrap: (color) => ({
-    width: "48px",
-    height: "48px",
-    borderRadius: "14px",
-    background: `${color}26`,
+  cardIconWrap: {
+    width: "40px",
+    height: "40px",
+    borderRadius: "11px",
+    background: "#0F6E5614",
+    color: "#0F6E56",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "22px",
     marginBottom: "16px",
-  }),
+  },
 
   cardTitle: {
-    fontSize: "17px",
-    fontWeight: "700",
-    color: "#F9FAFB",
+    fontFamily: "'Baloo 2', sans-serif",
+    fontSize: "15.5px",
+    fontWeight: "600",
+    color: "#232620",
     margin: 0,
-    marginBottom: "8px",
+    marginBottom: "6px",
   },
 
   cardDescription: {
-    fontSize: "14px",
-    color: "#9CA3AF",
+    fontSize: "13px",
+    color: "#8A8576",
     margin: 0,
     lineHeight: 1.5,
+    marginBottom: "18px",
   },
+
+  openBtn: (hover) => ({
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "8px 14px",
+    borderRadius: "8px",
+    border: "none",
+    background: hover
+      ? "#6733B9"
+      : "linear-gradient(90deg, #5313C0, #6C1EB1, #6733B9)",
+    color: "#FFFFFF",
+    fontWeight: "600",
+    fontSize: "12.5px",
+    cursor: "pointer",
+    transition: "background 0.15s ease",
+  }),
 };

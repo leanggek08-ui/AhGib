@@ -1,4 +1,13 @@
 import { useEffect, useState } from "react";
+import {
+  IconSearch,
+  IconSchool,
+  IconClipboardList,
+  IconPencil,
+  IconTrash,
+  IconX,
+  IconPlus,
+} from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { styles } from "../../styles/adminUniversityMajorsStyles";
 
@@ -14,6 +23,9 @@ export default function AdminUniversityMajors() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [addHover, setAddHover] = useState(false);
+  const [saveHover, setSaveHover] = useState(false);
 
   const [form, setForm] = useState({
     university_id: "",
@@ -25,7 +37,6 @@ export default function AdminUniversityMajors() {
 
   useEffect(() => {
     loadData();
-    // This loader is intentionally run once when the admin page mounts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -37,15 +48,9 @@ export default function AdminUniversityMajors() {
       const token = getToken();
 
       const [uniRes, majorRes, relationRes] = await Promise.all([
-        fetch(`${BASE_URL}/api/universities`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        fetch(`${BASE_URL}/major`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        fetch(`${BASE_URL}/uni-major`, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        fetch(`${BASE_URL}/api/universities`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${BASE_URL}/major`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${BASE_URL}/uni-major`, { headers: { Authorization: `Bearer ${token}` } }),
       ]);
 
       if (!uniRes.ok || !majorRes.ok || !relationRes.ok) {
@@ -60,17 +65,22 @@ export default function AdminUniversityMajors() {
       setMajors(majorData);
       setAssignments(relationData);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
     } finally {
       setLoading(false);
     }
   }
 
-  const resetForm = () =>
-    setForm({ university_id: "", major_id: "", tuition_fee: "" });
+  const resetForm = () => setForm({ university_id: "", major_id: "", tuition_fee: "" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingId(null);
+    setError("");
+    resetForm();
+  };
+
+  const handleSubmit = async () => {
     setError("");
 
     if (!form.university_id || !form.major_id) {
@@ -82,23 +92,19 @@ export default function AdminUniversityMajors() {
     try {
       const token = getToken();
       const method = editingId ? "PUT" : "POST";
-      const url = editingId
-        ? `${BASE_URL}/uni-major/${editingId}`
-        : `${BASE_URL}/uni-major`;
+      const url = editingId ? `${BASE_URL}/uni-major/${editingId}` : `${BASE_URL}/uni-major`;
 
       const res = await fetch(url, {
         method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(form),
       });
 
       if (!res.ok) throw new Error("Failed to save assignment");
 
-      resetForm();
+      setShowModal(false);
       setEditingId(null);
+      resetForm();
       loadData();
     } catch (err) {
       setError(err.message);
@@ -115,17 +121,11 @@ export default function AdminUniversityMajors() {
       major_id: item.major_id,
       tuition_fee: item.tuition_fee,
     });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setError("");
-    resetForm();
+    setShowModal(true);
   };
 
   const deleteAssignment = async (id) => {
-    const confirmDelete = window.confirm("Delete this assignment?");
-    if (!confirmDelete) return;
+    if (!window.confirm("Delete this assignment?")) return;
 
     setDeletingId(id);
     try {
@@ -134,9 +134,7 @@ export default function AdminUniversityMajors() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) throw new Error("Failed to delete assignment");
-
       loadData();
     } catch (err) {
       alert(err.message);
@@ -154,92 +152,34 @@ export default function AdminUniversityMajors() {
   return (
     <AdminLayout>
       <div style={styles.header}>
-        <h1 style={styles.pageTitle}>🎓 University ↔ Major Assignments</h1>
-        <p style={styles.subtitle}>
-          Link majors to universities and set tuition fees
-        </p>
+        <div>
+          <h1 style={styles.pageTitle}>University majors</h1>
+          <p style={styles.subtitle}>Link majors to universities and set tuition fees</p>
+        </div>
+
+        <button
+          onClick={() => {
+            setEditingId(null);
+            setError("");
+            resetForm();
+            setShowModal(true);
+          }}
+          onMouseEnter={() => setAddHover(true)}
+          onMouseLeave={() => setAddHover(false)}
+          style={styles.addBtn(addHover)}
+        >
+          <IconPlus size={16} stroke={2} />
+          Add assignment
+        </button>
       </div>
 
-      {/* FORM CARD */}
-      <form onSubmit={handleSubmit} style={styles.formCard}>
-        <div style={styles.formTitle}>
-          {editingId ? "✏️ Edit Assignment" : "➕ Add Assignment"}
-        </div>
-
-        <div style={styles.formGrid}>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>University</label>
-            <select
-              value={form.university_id}
-              onChange={(e) =>
-                setForm({ ...form, university_id: e.target.value })
-              }
-              style={styles.select}
-            >
-              <option value="">Select University</option>
-              {universities.map((u) => (
-                <option key={u.university_id} value={u.university_id}>
-                  {u.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Major</label>
-            <select
-              value={form.major_id}
-              onChange={(e) => setForm({ ...form, major_id: e.target.value })}
-              style={styles.select}
-            >
-              <option value="">Select Major</option>
-              {majors.map((m) => (
-                <option key={m.major_id} value={m.major_id}>
-                  {m.major_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Tuition Fee ($)</label>
-            <input
-              type="number"
-              placeholder="e.g. 1200"
-              value={form.tuition_fee}
-              onChange={(e) =>
-                setForm({ ...form, tuition_fee: e.target.value })
-              }
-              style={styles.input}
-            />
-          </div>
-        </div>
-
-        {error && <div style={styles.errorText}>{error}</div>}
-
-        <div style={styles.formActions}>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
-          >
-            {saving ? "Saving..." : editingId ? "Update" : "Add Assignment"}
-          </button>
-
-          {editingId && (
-            <button type="button" onClick={cancelEdit} style={styles.cancelBtn}>
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-
-      {/* TOOLBAR */}
       <div style={styles.toolbar}>
         <div style={styles.searchWrap}>
-          <span style={styles.searchIcon}>🔍</span>
+          <span style={styles.searchIcon}>
+            <IconSearch size={16} stroke={1.75} />
+          </span>
           <input
-            placeholder="Search university or major..."
+            placeholder="Search by university or major"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={styles.searchInput}
@@ -250,19 +190,20 @@ export default function AdminUniversityMajors() {
         </span>
       </div>
 
-      {/* TABLE */}
       <div style={styles.tableCard}>
         {loading ? (
           <div>
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <div key={i} style={styles.skeletonRow}>
-                <div style={styles.skeletonBar("70%")} />
+                <div style={styles.skeletonBar("60%")} />
               </div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>🔗</div>
+            <div style={styles.emptyIcon}>
+              <IconClipboardList size={32} stroke={1.5} />
+            </div>
             <p>No assignments found{search ? ` for "${search}"` : ""}.</p>
           </div>
         ) : (
@@ -275,56 +216,44 @@ export default function AdminUniversityMajors() {
                 <th style={styles.th}>Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {filtered.map((item) => (
                 <tr
                   key={item.uni_major_id}
                   style={styles.row}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#FAFAFB")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FAF8F3")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <td style={styles.td}>
-                    <div style={styles.uniCell}>{item.university_name}</div>
-                    <div style={{ fontSize: "12px", color: "#9CA3AF" }}>
-                      ID: {item.uni_major_id}
+                    <div style={styles.uniCell}>
+                      <div style={styles.uniIcon}>
+                        <IconSchool size={17} stroke={1.75} />
+                      </div>
+                      <div>
+                        <div style={styles.uniName}>{item.university_name}</div>
+                        <div style={styles.rowId}>ID: {item.uni_major_id}</div>
+                      </div>
                     </div>
                   </td>
-
                   <td style={styles.td}>
                     <span style={styles.majorBadge}>{item.major_name}</span>
                   </td>
-
                   <td style={styles.td}>
-                    <span style={styles.tuition}>
-                      ${Number(item.tuition_fee).toLocaleString()}
-                    </span>
+                    <span style={styles.price}>${Number(item.tuition_fee).toLocaleString()}</span>
                   </td>
-
                   <td style={styles.td}>
                     <div style={styles.actions}>
-                      <button
-                        onClick={() => editAssignment(item)}
-                        style={styles.editBtn}
-                      >
+                      <button onClick={() => editAssignment(item)} style={styles.editBtn}>
+                        <IconPencil size={14} stroke={1.75} />
                         Edit
                       </button>
                       <button
                         onClick={() => deleteAssignment(item.uni_major_id)}
                         disabled={deletingId === item.uni_major_id}
-                        style={{
-                          ...styles.deleteBtn,
-                          opacity:
-                            deletingId === item.uni_major_id ? 0.5 : 1,
-                        }}
+                        style={styles.deleteBtn(deletingId === item.uni_major_id)}
                       >
-                        {deletingId === item.uni_major_id
-                          ? "Deleting..."
-                          : "Delete"}
+                        <IconTrash size={14} stroke={1.75} />
+                        {deletingId === item.uni_major_id ? "Deleting" : "Delete"}
                       </button>
                     </div>
                   </td>
@@ -334,6 +263,79 @@ export default function AdminUniversityMajors() {
           </table>
         )}
       </div>
+
+      {showModal && (
+        <div style={styles.overlay}>
+          <div style={styles.modal}>
+            <div style={styles.modalHeader}>
+              <h2 style={styles.modalTitle}>{editingId ? "Edit assignment" : "Add assignment"}</h2>
+              <button style={styles.closeIcon} onClick={closeModal}>
+                <IconX size={18} stroke={1.75} />
+              </button>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>University</label>
+              <select
+                value={form.university_id}
+                onChange={(e) => setForm({ ...form, university_id: e.target.value })}
+                style={styles.select}
+              >
+                <option value="">Select university</option>
+                {universities.map((u) => (
+                  <option key={u.university_id} value={u.university_id}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Major</label>
+              <select
+                value={form.major_id}
+                onChange={(e) => setForm({ ...form, major_id: e.target.value })}
+                style={styles.select}
+              >
+                <option value="">Select major</option>
+                {majors.map((m) => (
+                  <option key={m.major_id} value={m.major_id}>
+                    {m.major_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Tuition fee ($)</label>
+              <input
+                type="number"
+                placeholder="e.g. 1200"
+                value={form.tuition_fee}
+                onChange={(e) => setForm({ ...form, tuition_fee: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+
+            {error && <div style={styles.errorText}>{error}</div>}
+
+            <div style={styles.modalFooter}>
+              <button style={styles.cancelBtn} onClick={closeModal}>
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving}
+                onMouseEnter={() => setSaveHover(true)}
+                onMouseLeave={() => setSaveHover(false)}
+                style={styles.saveBtn(saveHover, saving)}
+              >
+                {saving ? "Saving…" : editingId ? "Update" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

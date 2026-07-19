@@ -1,107 +1,72 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { IconShieldStar, IconUsers, IconActivity, IconArrowRight } from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { styles } from "../../styles/superAdminStyles";
 
 const panelSections = [
   {
-    icon: "👤",
-    title: "User Management",
-    description: "Create Admin accounts and manage user roles.",
-    color: "#818CF8",
+    icon: IconUsers,
+    title: "User management",
+    description: "Create admin accounts and manage user roles.",
     path: "/admin/super-users",
   },
   {
-    icon: "📜",
-    title: "Activity Logs",
+    icon: IconActivity,
+    title: "Activity logs",
     description: "View every important action in the system.",
-    color: "#34D399",
     path: "/admin/activity",
-  },
-  {
-    icon: "⚙️",
-    title: "System Settings",
-    description: "Future configuration page.",
-    color: "#FBBF24",
-    path: "/admin/settings",
   },
 ];
 
-export default function SuperAdminPanel() {
+function PanelCard({ section, onClick }) {
+  const [hover, setHover] = useState(false);
+  const Icon = section.icon;
 
+  return (
+    <div
+      style={styles.card(hover)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onClick={onClick}
+    >
+      <div style={styles.cardIconWrap}>
+        <Icon size={19} stroke={1.75} />
+      </div>
+      <h3 style={styles.cardTitle}>{section.title}</h3>
+      <p style={styles.cardDescription}>{section.description}</p>
+      <button style={styles.openBtn(hover)}>
+        Open
+        <IconArrowRight size={14} stroke={2} />
+      </button>
+    </div>
+  );
+}
+
+export default function SuperAdminPanel() {
   const navigate = useNavigate();
 
   return (
     <AdminLayout>
-
       <div style={styles.headerRow}>
-        <span style={styles.shieldBadge}>🛡️</span>
-
+        <span style={styles.shieldBadge}>
+          <IconShieldStar size={22} stroke={1.75} />
+        </span>
         <div>
-          <h1 style={styles.pageTitle}>
-            Super Admin Panel
-          </h1>
-
-          <p style={styles.subtitle}>
-            Welcome, Super Admin. You have full control over the system.
-          </p>
+          <h1 style={styles.pageTitle}>Super admin panel</h1>
+          <p style={styles.subtitle}>Welcome, super admin. You have full control over the system.</p>
         </div>
       </div>
 
-
       <div style={styles.grid}>
-
         {panelSections.map((section) => (
-
-          <div
+          <PanelCard
             key={section.title}
-            style={{
-              ...styles.card,
-              cursor: "pointer",
-            }}
-
+            section={section}
             onClick={() => navigate(section.path)}
-
-          >
-
-            <div style={styles.cardAccentBar(section.color)} />
-
-            <div style={styles.cardIconWrap(section.color)}>
-              {section.icon}
-            </div>
-
-
-            <h3 style={styles.cardTitle}>
-              {section.title}
-            </h3>
-
-
-            <p style={styles.cardDescription}>
-              {section.description}
-            </p>
-
-
-            <button
-              style={{
-                marginTop: "15px",
-                padding: "8px 14px",
-                borderRadius: "8px",
-                border: "none",
-                background: section.color,
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              Open
-            </button>
-
-
-          </div>
-
+          />
         ))}
-
       </div>
-
-
     </AdminLayout>
   );
 }

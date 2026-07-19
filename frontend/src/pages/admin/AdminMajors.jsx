@@ -1,4 +1,12 @@
 import { useEffect, useState } from "react";
+import {
+  IconSearch,
+  IconBook2,
+  IconPencil,
+  IconTrash,
+  IconX,
+  IconPlus,
+} from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { styles } from "../../styles/adminMajorsStyles";
 
@@ -11,6 +19,9 @@ export default function AdminMajors() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [addHover, setAddHover] = useState(false);
+  const [saveHover, setSaveHover] = useState(false);
 
   const [form, setForm] = useState({
     major_name: "",
@@ -43,8 +54,9 @@ export default function AdminMajors() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const resetForm = () => setForm({ major_name: "", field_of_study: "" });
+
+  const handleSubmit = async () => {
     setError("");
 
     if (!form.major_name.trim()) {
@@ -71,8 +83,9 @@ export default function AdminMajors() {
 
       if (!res.ok) throw new Error("Failed to save major");
 
-      setForm({ major_name: "", field_of_study: "" });
+      resetForm();
       setEditingId(null);
+      setShowModal(false);
       loadMajors();
     } catch (err) {
       setError(err.message);
@@ -86,14 +99,16 @@ export default function AdminMajors() {
     setError("");
     setForm({
       major_name: major.major_name,
-      field_of_study: major.field_of_study,
+      field_of_study: major.field_of_study || "",
     });
+    setShowModal(true);
   };
 
-  const cancelEdit = () => {
+  const closeModal = () => {
+    setShowModal(false);
     setEditingId(null);
     setError("");
-    setForm({ major_name: "", field_of_study: "" });
+    resetForm();
   };
 
   const deleteMajor = async (id) => {
@@ -127,69 +142,34 @@ export default function AdminMajors() {
   return (
     <AdminLayout>
       <div style={styles.header}>
-        <h1 style={styles.pageTitle}>📚 Majors</h1>
-        <p style={styles.subtitle}>
-          Manage academic majors available in the system
-        </p>
+        <div>
+          <h1 style={styles.pageTitle}>Majors</h1>
+          <p style={styles.subtitle}>Manage academic majors available in the system</p>
+        </div>
+
+        <button
+          onClick={() => {
+            setEditingId(null);
+            setError("");
+            resetForm();
+            setShowModal(true);
+          }}
+          onMouseEnter={() => setAddHover(true)}
+          onMouseLeave={() => setAddHover(false)}
+          style={styles.addBtn(addHover)}
+        >
+          <IconPlus size={16} stroke={2} />
+          Add major
+        </button>
       </div>
 
-      {/* FORM CARD */}
-      <form onSubmit={handleSubmit} style={styles.formCard}>
-        <div style={styles.formTitle}>
-          {editingId ? "✏️ Edit Major" : "➕ Add Major"}
-        </div>
-
-        <div style={styles.formGrid}>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Major Name</label>
-            <input
-              placeholder="e.g. Computer Science"
-              value={form.major_name}
-              onChange={(e) =>
-                setForm({ ...form, major_name: e.target.value })
-              }
-              style={styles.input}
-            />
-          </div>
-
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Field of Study</label>
-            <input
-              placeholder="e.g. Engineering & Technology"
-              value={form.field_of_study}
-              onChange={(e) =>
-                setForm({ ...form, field_of_study: e.target.value })
-              }
-              style={styles.input}
-            />
-          </div>
-        </div>
-
-        {error && <div style={styles.errorText}>{error}</div>}
-
-        <div style={styles.formActions}>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
-          >
-            {saving ? "Saving..." : editingId ? "Update" : "Add Major"}
-          </button>
-
-          {editingId && (
-            <button type="button" onClick={cancelEdit} style={styles.cancelBtn}>
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-
-      {/* TOOLBAR */}
       <div style={styles.toolbar}>
         <div style={styles.searchWrap}>
-          <span style={styles.searchIcon}>🔍</span>
+          <span style={styles.searchIcon}>
+            <IconSearch size={16} stroke={1.75} />
+          </span>
           <input
-            placeholder="Search major or field..."
+            placeholder="Search by major or field"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={styles.searchInput}
@@ -200,11 +180,10 @@ export default function AdminMajors() {
         </span>
       </div>
 
-      {/* TABLE */}
       <div style={styles.tableCard}>
         {loading ? (
           <div>
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <div key={i} style={styles.skeletonRow}>
                 <div style={styles.skeletonBar("60%")} />
               </div>
@@ -212,7 +191,9 @@ export default function AdminMajors() {
           </div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>📚</div>
+            <div style={styles.emptyIcon}>
+              <IconBook2 size={32} stroke={1.5} />
+            </div>
             <p>No majors found{search ? ` for "${search}"` : ""}.</p>
           </div>
         ) : (
@@ -220,7 +201,7 @@ export default function AdminMajors() {
             <thead>
               <tr>
                 <th style={styles.th}>Major</th>
-                <th style={styles.th}>Field of Study</th>
+                <th style={styles.th}>Field of study</th>
                 <th style={styles.th}>Actions</th>
               </tr>
             </thead>
@@ -230,49 +211,42 @@ export default function AdminMajors() {
                 <tr
                   key={m.major_id}
                   style={styles.row}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#FAFAFB")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FAF8F3")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <td style={styles.td}>
                     <div style={styles.majorCell}>
-                      <div style={styles.majorIcon}>📚</div>
+                      <div style={styles.majorIcon}>
+                        <IconBook2 size={18} stroke={1.75} />
+                      </div>
                       <div>
                         <div style={styles.majorName}>{m.major_name}</div>
-                        <div style={{ fontSize: "12px", color: "#9CA3AF" }}>
-                          ID: {m.major_id}
-                        </div>
+                        <div style={styles.majorId}>ID: {m.major_id}</div>
                       </div>
                     </div>
                   </td>
 
                   <td style={styles.td}>
                     {m.field_of_study ? (
-                      <span style={styles.fieldBadge}>
-                        {m.field_of_study}
-                      </span>
+                      <span style={styles.fieldBadge}>{m.field_of_study}</span>
                     ) : (
-                      <span style={{ color: "#D1D5DB" }}>—</span>
+                      <span style={styles.noField}>—</span>
                     )}
                   </td>
 
                   <td style={styles.td}>
                     <div style={styles.actions}>
                       <button onClick={() => editMajor(m)} style={styles.editBtn}>
+                        <IconPencil size={14} stroke={1.75} />
                         Edit
                       </button>
                       <button
                         onClick={() => deleteMajor(m.major_id)}
                         disabled={deletingId === m.major_id}
-                        style={{
-                          ...styles.deleteBtn,
-                          opacity: deletingId === m.major_id ? 0.5 : 1,
-                        }}
+                        style={styles.deleteBtn(deletingId === m.major_id)}
                       >
-                        {deletingId === m.major_id ? "Deleting..." : "Delete"}
+                        <IconTrash size={14} stroke={1.75} />
+                        {deletingId === m.major_id ? "Deleting" : "Delete"}
                       </button>
                     </div>
                   </td>
@@ -282,6 +256,58 @@ export default function AdminMajors() {
           </table>
         )}
       </div>
+
+      {showModal && (
+        <div style={styles.overlay}>
+          <div style={styles.modal}>
+            <div style={styles.modalHeader}>
+              <h2 style={styles.modalTitle}>
+                {editingId ? "Edit major" : "Add major"}
+              </h2>
+              <button style={styles.closeIcon} onClick={closeModal}>
+                <IconX size={18} stroke={1.75} />
+              </button>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Major name</label>
+              <input
+                placeholder="e.g. Computer Science"
+                value={form.major_name}
+                onChange={(e) => setForm({ ...form, major_name: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Field of study</label>
+              <input
+                placeholder="e.g. Engineering & Technology"
+                value={form.field_of_study}
+                onChange={(e) => setForm({ ...form, field_of_study: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+
+            {error && <div style={styles.errorText}>{error}</div>}
+
+            <div style={styles.modalFooter}>
+              <button style={styles.cancelBtn} onClick={closeModal}>
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving}
+                onMouseEnter={() => setSaveHover(true)}
+                onMouseLeave={() => setSaveHover(false)}
+                style={styles.saveBtn(saveHover, saving)}
+              >
+                {saving ? "Saving…" : editingId ? "Update" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

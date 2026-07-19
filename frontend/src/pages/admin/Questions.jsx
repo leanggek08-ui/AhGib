@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IconSearch, IconHelpCircle, IconPencil, IconTrash, IconX, IconPlus } from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { questionService } from "../../services/questionService";
 import { styles } from "../../styles/adminQuestionsStyles";
@@ -11,6 +12,8 @@ export default function Questions() {
   const [saving, setSaving] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
+  const [addHover, setAddHover] = useState(false);
+  const [saveHover, setSaveHover] = useState(false);
 
   const [form, setForm] = useState({
     question_text: "",
@@ -27,7 +30,7 @@ export default function Questions() {
       const data = await questionService.getAll();
       setQuestions(data);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -66,7 +69,6 @@ export default function Questions() {
       resetForm();
       setShowModal(false);
       loadQuestions();
-      alert("Question created successfully ✅");
     } catch (err) {
       alert(err.message);
     } finally {
@@ -92,7 +94,6 @@ export default function Questions() {
       setEditingId(null);
       resetForm();
       loadQuestions();
-      alert("Question updated successfully ✅");
     } catch (err) {
       alert(err.message);
     } finally {
@@ -121,17 +122,22 @@ export default function Questions() {
             resetForm();
             setShowModal(true);
           }}
-          style={styles.addBtn}
+          onMouseEnter={() => setAddHover(true)}
+          onMouseLeave={() => setAddHover(false)}
+          style={styles.addBtn(addHover)}
         >
-          + Add Question
+          <IconPlus size={16} stroke={2} />
+          Add question
         </button>
       </div>
 
       <div style={styles.toolbar}>
         <div style={styles.searchWrap}>
-          <span style={styles.searchIcon}>🔍</span>
+          <span style={styles.searchIcon}>
+            <IconSearch size={16} stroke={1.75} />
+          </span>
           <input
-            placeholder="Search by question, type, or subject..."
+            placeholder="Search by question, type, or subject"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={styles.searchInput}
@@ -154,7 +160,9 @@ export default function Questions() {
           </div>
         ) : filteredQuestions.length === 0 ? (
           <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>❓</div>
+            <div style={styles.emptyIcon}>
+              <IconHelpCircle size={32} stroke={1.5} />
+            </div>
             <p>No questions found{search ? ` for "${search}"` : ""}.</p>
           </div>
         ) : (
@@ -173,18 +181,12 @@ export default function Questions() {
                 <tr
                   key={q.question_id}
                   style={styles.row}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#FAFAFB")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FAF8F3")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <td style={styles.td}>
                     <div style={styles.questionText}>{q.question_text}</div>
-                    <div style={{ fontSize: "12px", color: "#9CA3AF", marginTop: "4px" }}>
-                      ID: {q.question_id}
-                    </div>
+                    <div style={styles.questionId}>ID: {q.question_id}</div>
                   </td>
                   <td style={styles.td}>
                     <span style={styles.typeBadge}>{q.question_type}</span>
@@ -195,17 +197,16 @@ export default function Questions() {
                   <td style={styles.td}>
                     <div style={styles.actions}>
                       <button onClick={() => handleEdit(q)} style={styles.editBtn}>
+                        <IconPencil size={14} stroke={1.75} />
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(q.question_id)}
                         disabled={deletingId === q.question_id}
-                        style={{
-                          ...styles.deleteBtn,
-                          opacity: deletingId === q.question_id ? 0.5 : 1,
-                        }}
+                        style={styles.deleteBtn(deletingId === q.question_id)}
                       >
-                        {deletingId === q.question_id ? "Deleting..." : "Delete"}
+                        <IconTrash size={14} stroke={1.75} />
+                        {deletingId === q.question_id ? "Deleting" : "Delete"}
                       </button>
                     </div>
                   </td>
@@ -216,13 +217,12 @@ export default function Questions() {
         )}
       </div>
 
-      {/* MODAL */}
       {showModal && (
         <div style={styles.overlay}>
           <div style={styles.modal}>
             <div style={styles.modalHeader}>
               <h2 style={styles.modalTitle}>
-                {editingId ? "Edit Question" : "Add Question"}
+                {editingId ? "Edit question" : "Add question"}
               </h2>
               <button
                 style={styles.closeIcon}
@@ -232,7 +232,7 @@ export default function Questions() {
                   resetForm();
                 }}
               >
-                ✕
+                <IconX size={18} stroke={1.75} />
               </button>
             </div>
 
@@ -240,7 +240,7 @@ export default function Questions() {
               <label style={styles.label}>Question</label>
               <textarea
                 name="question_text"
-                placeholder="Enter the question..."
+                placeholder="Enter the question"
                 value={form.question_text}
                 onChange={handleChange}
                 style={styles.textarea}
@@ -248,10 +248,10 @@ export default function Questions() {
             </div>
 
             <div style={styles.fieldGroup}>
-              <label style={styles.label}>Question Type</label>
+              <label style={styles.label}>Question type</label>
               <input
                 name="question_type"
-                placeholder="e.g. Multiple Choice"
+                placeholder="e.g. Multiple choice"
                 value={form.question_type}
                 onChange={handleChange}
                 style={styles.input}
@@ -260,13 +260,22 @@ export default function Questions() {
 
             <div style={styles.fieldGroup}>
               <label style={styles.label}>Subject</label>
-              <input
+              <select
                 name="subject"
-                placeholder="e.g. Mathematics"
                 value={form.subject}
                 onChange={handleChange}
                 style={styles.input}
-              />
+              >
+                <option value="">Select a subject</option>
+                <option value="Technology">Technology</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Science">Science</option>
+                <option value="Business">Business</option>
+                <option value="Language">Language</option>
+                <option value="Creativity">Creativity</option>
+                <option value="Leadership">Leadership</option>
+                <option value="Communication">Communication</option>
+              </select>
             </div>
 
             <div style={styles.modalFooter}>
@@ -281,11 +290,13 @@ export default function Questions() {
                 Cancel
               </button>
               <button
-                style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
                 onClick={editingId ? handleUpdate : handleCreate}
                 disabled={saving}
+                onMouseEnter={() => setSaveHover(true)}
+                onMouseLeave={() => setSaveHover(false)}
+                style={styles.saveBtn(saveHover, saving)}
               >
-                {saving ? "Saving..." : editingId ? "Update" : "Save"}
+                {saving ? "Saving…" : editingId ? "Update" : "Save"}
               </button>
             </div>
           </div>

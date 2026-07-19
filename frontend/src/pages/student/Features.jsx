@@ -405,6 +405,7 @@ function AssessmentPanel() {
   const [report, setReport] = useState(null);
   const [error, setError] = useState("");
   const [savingAnswer, setSavingAnswer] = useState(false);
+  const [errorContext, setErrorContext] = useState("intro");
 
   function updateScore(key, value) {
     setAcademicScores((prev) => ({ ...prev, [key]: value }));
@@ -418,6 +419,7 @@ function AssessmentPanel() {
       setStep("academic");
     } catch (err) {
       setError(err.message || "Failed to start assessment.");
+      setErrorContext("intro");
       setStep("error");
     }
   }
@@ -452,6 +454,7 @@ function AssessmentPanel() {
       setStep("quiz");
     } catch (err) {
       setError(err.message || "Failed to load assessment questions.");
+      setErrorContext("quiz");
       setStep("error");
     }
   }
@@ -481,6 +484,7 @@ function AssessmentPanel() {
       );
     } catch (err) {
       setError(err.message || "Failed to save your answer.");
+      setErrorContext("quiz");
       setStep("error");
       setSavingAnswer(false);
       return;
@@ -508,6 +512,7 @@ function AssessmentPanel() {
       setStep("report");
     } catch (err) {
       setError(err.message || "Failed to generate your career report.");
+      setErrorContext("analysis");
       setStep("error");
     } finally {
       setSavingAnswer(false);
@@ -519,9 +524,44 @@ function AssessmentPanel() {
     setError("");
     setAcademicScores({});
     setAcademicError("");
-    setAssId(null);        // NEW — reset so retake creates a fresh assessment
+    setAssId(null);
     setSavingAnswer(false);
+    setErrorContext("intro");
     setStep("intro");
+  }
+
+  async function retryFromError() {
+    setError("");
+    if (errorContext === "analysis" && assId) {
+      setStep("submitting");
+      try {
+        const result = await assessmentService.analyzeAssessment(assId);
+        setReport(result.data);
+        setStep("report");
+      } catch (err) {
+        setError(err.message || "Failed to generate your career report.");
+        setStep("error");
+      } finally {
+        setSavingAnswer(false);
+      }
+    } else if (errorContext === "quiz" && assId) {
+      setStep("loading-questions");
+      try {
+        const data = await questionService.getAll();
+        if (!data || data.length === 0) {
+          throw new Error("No assessment questions are available yet.");
+        }
+        setQuestions(data);
+        setCurrent(0);
+        setAnswers({});
+        setStep("quiz");
+      } catch (err) {
+        setError(err.message || "Failed to load assessment questions.");
+        setStep("error");
+      }
+    } else {
+      retake();
+    }
   }
 
   if (step === "intro") {
@@ -601,9 +641,14 @@ function AssessmentPanel() {
     return (
       <div style={styles.assessmentCard}>
         <ErrorBox message={error} styles={errorBoxStyle} />
-        <button style={styles.startBtn} onClick={goToQuiz}>
-          Try Again
-        </button>
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+          <button style={styles.startBtn} onClick={retryFromError}>
+            Try Again
+          </button>
+          <button style={styles.retakeBtn} onClick={retake}>
+            Start Over
+          </button>
+        </div>
       </div>
     );
   }

@@ -1,6 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { IconSearch,
+  IconBriefcase,
+  IconTools,
+  IconPencil,
+  IconTrash,
+  IconX,
+  IconPlus,
+} from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
-import { styles } from "../../styles/adminCareerSkillsStyles";
+import { styles, accentFor } from "../../styles/adminCareerSkillsStyles";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -13,6 +21,10 @@ export default function AdminCareerSkills() {
   const [deletingId, setDeletingId] = useState(null);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [addHover, setAddHover] = useState(false);
+  const [saveHover, setSaveHover] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const [form, setForm] = useState({
     careers_id: "",
@@ -61,8 +73,21 @@ export default function AdminCareerSkills() {
 
   const resetForm = () => setForm({ careers_id: "", skill_name: "" });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingId(null);
+    setError("");
+    resetForm();
+  };
+
+  const openAddModal = (presetCareerId = "") => {
+    setEditingId(null);
+    setError("");
+    setForm({ careers_id: presetCareerId ? String(presetCareerId) : "", skill_name: "" });
+    setShowModal(true);
+  };
+
+  const handleSubmit = async () => {
     setError("");
 
     if (!form.careers_id || !form.skill_name.trim()) {
@@ -89,8 +114,9 @@ export default function AdminCareerSkills() {
 
       if (!res.ok) throw new Error("Failed to save skill");
 
-      resetForm();
+      setShowModal(false);
       setEditingId(null);
+      resetForm();
       loadData();
     } catch (err) {
       setError(err.message);
@@ -103,15 +129,10 @@ export default function AdminCareerSkills() {
     setEditingId(skill.car_skill_id);
     setError("");
     setForm({
-      careers_id: skill.careers_id,
+      careers_id: String(skill.careers_id),
       skill_name: skill.skill_name,
     });
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setError("");
-    resetForm();
+    setShowModal(true);
   };
 
   const deleteSkill = async (id) => {
@@ -142,79 +163,48 @@ export default function AdminCareerSkills() {
       (s.skill_name || "").toLowerCase().includes(search.toLowerCase())
   );
 
+  // Group flat skill rows into one toolkit card per career
+  const grouped = useMemo(() => {
+    const map = new Map();
+    filtered.forEach((s) => {
+      if (!map.has(s.careers_id)) {
+        map.set(s.careers_id, {
+          careers_id: s.careers_id,
+          careers_name: s.careers_name,
+          items: [],
+        });
+      }
+      map.get(s.careers_id).items.push(s);
+    });
+    return Array.from(map.values());
+  }, [filtered]);
+
   return (
     <AdminLayout>
       <div style={styles.header}>
-        <h1 style={styles.pageTitle}>🛠 Career Skills</h1>
-        <p style={styles.subtitle}>
-          Link required skills to each career path
-        </p>
+        <div>
+          <h1 style={styles.pageTitle}>Career Skills</h1>
+          <p style={styles.subtitle}>Link required skills to each career path</p>
+        </div>
+
+        <button
+          onClick={() => openAddModal()}
+          onMouseEnter={() => setAddHover(true)}
+          onMouseLeave={() => setAddHover(false)}
+          style={styles.addBtn(addHover)}
+        >
+          <IconPlus size={16} stroke={2} />
+          Add skill
+        </button>
       </div>
 
-      {/* FORM CARD */}
-      <form onSubmit={handleSubmit} style={styles.formCard}>
-        <div style={styles.formTitle}>
-          {editingId ? "✏️ Edit Skill" : "➕ Add Skill"}
-        </div>
-
-        <div style={styles.formGrid}>
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Career</label>
-            <select
-              value={form.careers_id}
-              onChange={(e) =>
-                setForm({ ...form, careers_id: e.target.value })
-              }
-              style={styles.select}
-            >
-              <option value="">Select Career</option>
-              {careers.map((c) => (
-                <option key={c.careers_id} value={c.careers_id}>
-                  {c.careers_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div style={styles.fieldGroup}>
-            <label style={styles.label}>Skill Name</label>
-            <input
-              type="text"
-              placeholder="e.g. Problem Solving"
-              value={form.skill_name}
-              onChange={(e) =>
-                setForm({ ...form, skill_name: e.target.value })
-              }
-              style={styles.input}
-            />
-          </div>
-        </div>
-
-        {error && <div style={styles.errorText}>{error}</div>}
-
-        <div style={styles.formActions}>
-          <button
-            type="submit"
-            disabled={saving}
-            style={{ ...styles.saveBtn, opacity: saving ? 0.6 : 1 }}
-          >
-            {saving ? "Saving..." : editingId ? "Update" : "Add Skill"}
-          </button>
-
-          {editingId && (
-            <button type="button" onClick={cancelEdit} style={styles.cancelBtn}>
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
-
-      {/* TOOLBAR */}
       <div style={styles.toolbar}>
         <div style={styles.searchWrap}>
-          <span style={styles.searchIcon}>🔍</span>
+          <span style={styles.searchIcon}>
+            <IconSearch size={16} stroke={1.75} />
+          </span>
           <input
-            placeholder="Search career or skill..."
+            placeholder="Search by career or skill"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={styles.searchInput}
@@ -225,79 +215,140 @@ export default function AdminCareerSkills() {
         </span>
       </div>
 
-      {/* TABLE */}
-      <div style={styles.tableCard}>
-        {loading ? (
-          <div>
-            {[...Array(4)].map((_, i) => (
-              <div key={i} style={styles.skeletonRow}>
-                <div style={styles.skeletonBar("60%")} />
+      {loading ? (
+        <div style={styles.grid}>
+          {[...Array(4)].map((_, i) => (
+            <div key={i} style={styles.skeletonCard}>
+              <div style={styles.skeletonBar("50%")} />
+            </div>
+          ))}
+        </div>
+      ) : grouped.length === 0 ? (
+        <div style={styles.emptyState}>
+          <div style={styles.emptyIcon}>
+            <IconTools size={32} stroke={1.5} />
+          </div>
+          <p>No skills found{search ? ` for "${search}"` : ""}.</p>
+        </div>
+      ) : (
+        <div style={styles.grid}>
+          {grouped.map((career) => {
+            const accent = accentFor(career.careers_name);
+            const hovered = hoveredCard === career.careers_id;
+            return (
+              <div
+                key={career.careers_id}
+                style={styles.card(accent, hovered)}
+                onMouseEnter={() => setHoveredCard(career.careers_id)}
+                onMouseLeave={() => setHoveredCard(null)}
+              >
+                <div style={styles.cardHeader}>
+                  <div style={styles.careerIcon(accent)}>
+                    <IconBriefcase size={16} stroke={1.75} />
+                  </div>
+                  <div style={styles.careerName}>{career.careers_name}</div>
+                  <span style={styles.skillCount(accent)}>
+                    {career.items.length} skill{career.items.length !== 1 ? "s" : ""}
+                  </span>
+                </div>
+
+                <div style={styles.chipsRail}>
+                  {career.items.map((s) => (
+                    <span key={s.car_skill_id} style={styles.chip(accent)}>
+                      <span style={styles.chipDot(accent)} />
+                      {s.skill_name}
+                      <span style={styles.chipActions}>
+                        <button
+                          onClick={() => editSkill(s)}
+                          style={styles.chipIconBtn(accent, false)}
+                          title="Edit"
+                        >
+                          <IconPencil size={14} stroke={2} />
+                        </button>
+                        <button
+                          onClick={() => deleteSkill(s.car_skill_id)}
+                          disabled={deletingId === s.car_skill_id}
+                          style={styles.chipIconBtn(accent, deletingId === s.car_skill_id)}
+                          title="Delete"
+                        >
+                          <IconTrash size={14} stroke={2} />
+                        </button>
+                      </span>
+                    </span>
+                  ))}
+
+                  <button
+                    style={styles.addChip(accent)}
+                    onClick={() => openAddModal(career.careers_id)}
+                  >
+                    <IconPlus size={12} stroke={2} />
+                    Add skill
+                  </button>
+                </div>
               </div>
-            ))}
+            );
+          })}
+        </div>
+      )}
+
+      {showModal && (
+        <div style={styles.overlay}>
+          <div style={styles.modal}>
+            <div style={styles.modalHeader}>
+              <h2 style={styles.modalTitle}>
+                {editingId ? "Edit skill" : "Add skill"}
+              </h2>
+              <button style={styles.closeIcon} onClick={closeModal}>
+                <IconX size={18} stroke={1.75} />
+              </button>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Career</label>
+              <select
+                value={form.careers_id}
+                onChange={(e) => setForm({ ...form, careers_id: e.target.value })}
+                style={styles.select}
+              >
+                <option value="">Select career</option>
+                {careers.map((c) => (
+                  <option key={c.careers_id} value={c.careers_id}>
+                    {c.careers_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Skill name</label>
+              <input
+                type="text"
+                placeholder="e.g. Problem Solving"
+                value={form.skill_name}
+                onChange={(e) => setForm({ ...form, skill_name: e.target.value })}
+                style={styles.input}
+              />
+            </div>
+
+            {error && <div style={styles.errorText}>{error}</div>}
+
+            <div style={styles.modalFooter}>
+              <button style={styles.cancelBtn} onClick={closeModal}>
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                disabled={saving}
+                onMouseEnter={() => setSaveHover(true)}
+                onMouseLeave={() => setSaveHover(false)}
+                style={styles.saveBtn(saveHover, saving)}
+              >
+                {saving ? "Saving…" : editingId ? "Update" : "Save"}
+              </button>
+            </div>
           </div>
-        ) : filtered.length === 0 ? (
-          <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>🛠</div>
-            <p>No skills found{search ? ` for "${search}"` : ""}.</p>
-          </div>
-        ) : (
-          <table style={styles.table}>
-            <thead>
-              <tr>
-                <th style={styles.th}>Career</th>
-                <th style={styles.th}>Skill</th>
-                <th style={styles.th}>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {filtered.map((s) => (
-                <tr
-                  key={s.car_skill_id}
-                  style={styles.row}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#FAFAFB")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
-                >
-                  <td style={styles.td}>
-                    <div style={styles.careerCell}>{s.careers_name}</div>
-                    <div style={{ fontSize: "12px", color: "#9CA3AF" }}>
-                      ID: {s.car_skill_id}
-                    </div>
-                  </td>
-
-                  <td style={styles.td}>
-                    <span style={styles.skillBadge}>{s.skill_name}</span>
-                  </td>
-
-                  <td style={styles.td}>
-                    <div style={styles.actions}>
-                      <button onClick={() => editSkill(s)} style={styles.editBtn}>
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => deleteSkill(s.car_skill_id)}
-                        disabled={deletingId === s.car_skill_id}
-                        style={{
-                          ...styles.deleteBtn,
-                          opacity: deletingId === s.car_skill_id ? 0.5 : 1,
-                        }}
-                      >
-                        {deletingId === s.car_skill_id
-                          ? "Deleting..."
-                          : "Delete"}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

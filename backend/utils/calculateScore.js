@@ -32,7 +32,9 @@ async function calculateScore(ass_id) {
     for (let subject in subjectMap) {
       await pool.query(
         `INSERT INTO score (ass_id, subject, score_value)
-                 VALUES ($1, $2, $3)`,
+                 VALUES ($1, $2, $3)
+                 ON CONFLICT (ass_id, subject)
+                 DO UPDATE SET score_value = EXCLUDED.score_value`,
         [ass_id, subject, subjectMap[subject]],
       );
     }

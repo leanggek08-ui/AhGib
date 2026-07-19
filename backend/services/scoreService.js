@@ -6,7 +6,7 @@ export const calculateScore = async (ass_id) => {
       `
       SELECT q.subject, SUM(a.answer_value) AS score
       FROM answer a
-      JOIN question q ON q.question_id = a.question_id
+      JOIN questions q ON q.question_id = a.question_id
       WHERE a.ass_id = $1
       GROUP BY q.subject
       `,

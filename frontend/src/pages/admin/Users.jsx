@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { IconSearch, IconFolder, IconPencil, IconTrash } from "@tabler/icons-react";
 import AdminLayout from "../../layouts/AdminLayout";
 import { userService } from "../../services/userService";
 import { styles } from "../../styles/adminUsersStyles";
@@ -11,8 +12,8 @@ export default function Users() {
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [updateHover, setUpdateHover] = useState(false);
   const user = JSON.parse(localStorage.getItem("user"));
-  
 
   const [form, setForm] = useState({
     username: "",
@@ -23,19 +24,17 @@ export default function Users() {
     loadUsers();
   }, []);
 
-const loadUsers = async () => {
-  try {
-    const data = await userService.getAllUsers();
+  const loadUsers = async () => {
+    try {
+      const data = await userService.getAllUsers();
+      setUsers(data);
+    } catch (err) {
+      console.error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    console.log("Users:", data);
-
-    setUsers(data);
-  } catch (err) {
-    console.error(err.message);
-  } finally {
-    setLoading(false);
-  }
-};
   const handleDelete = async (id) => {
     if (!confirm("Delete this user?")) return;
 
@@ -49,50 +48,42 @@ const loadUsers = async () => {
       setDeletingId(null);
     }
   };
-  const handleEdit = (user) => {
-    setEditingUser(user);
 
+  const handleEdit = (u) => {
+    setEditingUser(u);
     setForm({
-      username: user.username,
-      role_id: user.role_id,
+      username: u.username,
+      role_id: u.role_id,
     });
-
     setShowModal(true);
-};
-const handleChange = (e) => {
-  setForm({
-    ...form,
-    [e.target.name]:
-      e.target.name === "role_id"
-        ? Number(e.target.value)
-        : e.target.value,
-  });
-};
+  };
 
-const handleUpdate = async () => {
-  if (!form.username.trim()) {
-    alert("Username is required");
-    return;
-  }
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]:
+        e.target.name === "role_id" ? Number(e.target.value) : e.target.value,
+    });
+  };
 
-  try {
-    setSaving(true);
+  const handleUpdate = async () => {
+    if (!form.username.trim()) {
+      alert("Username is required");
+      return;
+    }
 
-    await userService.updateUser(editingUser.user_id, form);
-
-    setShowModal(false);
-    setEditingUser(null);
-
-    loadUsers();
-
-    alert("User updated successfully ✅");
-
-  } catch (err) {
-    alert(err.message);
-  } finally {
-    setSaving(false);
-  }
-};
+    try {
+      setSaving(true);
+      await userService.updateUser(editingUser.user_id, form);
+      setShowModal(false);
+      setEditingUser(null);
+      loadUsers();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const roleLabel = (role_id) => {
     if (role_id === 1) return "admin";
@@ -102,17 +93,14 @@ const handleUpdate = async () => {
   };
 
   const filtered = users.filter((u) => {
-  const keyword = search.toLowerCase().trim();
-
-
-
-  return (
-    (u.username || "").toLowerCase().includes(keyword) ||
-    (u.email || "").toLowerCase().includes(keyword) ||
-    String(u.user_id).includes(keyword) ||
-    roleLabel(u.role_id).includes(keyword)
-  );
-});
+    const keyword = search.toLowerCase().trim();
+    return (
+      (u.username || "").toLowerCase().includes(keyword) ||
+      (u.email || "").toLowerCase().includes(keyword) ||
+      String(u.user_id).includes(keyword) ||
+      roleLabel(u.role_id).includes(keyword)
+    );
+  });
 
   return (
     <AdminLayout>
@@ -125,9 +113,11 @@ const handleUpdate = async () => {
 
       <div style={styles.toolbar}>
         <div style={styles.searchWrap}>
-          <span style={styles.searchIcon}>🔍</span>
+          <span style={styles.searchIcon}>
+            <IconSearch size={16} stroke={1.75} />
+          </span>
           <input
-            placeholder="Search by name or email..."
+            placeholder="Search by name or email"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={styles.searchInput}
@@ -149,7 +139,9 @@ const handleUpdate = async () => {
           </div>
         ) : filtered.length === 0 ? (
           <div style={styles.emptyState}>
-            <div style={styles.emptyIcon}>🗂️</div>
+            <div style={styles.emptyIcon}>
+              <IconFolder size={32} stroke={1.5} />
+            </div>
             <p>No users found{search ? ` for "${search}"` : ""}.</p>
           </div>
         ) : (
@@ -159,7 +151,7 @@ const handleUpdate = async () => {
                 <th style={styles.th}>User</th>
                 <th style={styles.th}>Email</th>
                 <th style={styles.th}>Role</th>
-                {user?.role_id === 3 && (<th style={styles.th}>Action</th>)}
+                {user?.role_id === 3 && <th style={styles.th}>Action</th>}
               </tr>
             </thead>
 
@@ -168,12 +160,8 @@ const handleUpdate = async () => {
                 <tr
                   key={u.user_id}
                   style={styles.row}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.background = "#FAFAFB")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.background = "transparent")
-                  }
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FAF8F3")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <td style={styles.td}>
                     <div style={styles.userCell}>
@@ -182,9 +170,7 @@ const handleUpdate = async () => {
                       </div>
                       <div>
                         <div style={styles.username}>{u.username}</div>
-                        <div style={{ fontSize: "12px", color: "#9CA3AF" }}>
-                          ID: {u.user_id}
-                        </div>
+                        <div style={styles.userId}>ID: {u.user_id}</div>
                       </div>
                     </div>
                   </td>
@@ -192,124 +178,83 @@ const handleUpdate = async () => {
                     <span style={styles.email}>{u.email}</span>
                   </td>
                   <td style={styles.td}>
-                    <span style={styles.roleBadge(u.role_id === 3)}>
-                      {u.role_id === 3 ? "Super Admin" : u.role_id === 1 ? "Admin" : "Student"}
+                    <span style={styles.roleBadge(u.role_id)}>
+                      {u.role_id === 3 ? "Super admin" : u.role_id === 1 ? "Admin" : "Student"}
                     </span>
                   </td>
-                  <td style={styles.td}>
-                    {user?.role_id === 3 && (
-                    <button
-                      onClick={() => handleEdit(u)}
-                      style={{
-                        padding: "8px 12px",
-                        marginRight: 8,
-                        background: "#F59E0B",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 6,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Edit
-                    </button>
-                    )}
-                    {user?.role_id === 3 && (
-                    <button
-                      onClick={() => handleDelete(u.user_id)}
-                      disabled={deletingId === u.user_id}
-                      style={{
-                        ...styles.deleteBtn,
-                        opacity: deletingId === u.user_id ? 0.5 : 1,
-                      }}
-                    >
-                      {deletingId === u.user_id ? "Deleting..." : "Delete"}
-                    </button>
+                  {user?.role_id === 3 && (
+                    <td style={styles.td}>
+                      <div style={styles.actionRow}>
+                        <button onClick={() => handleEdit(u)} style={styles.editBtn}>
+                          <IconPencil size={14} stroke={1.75} />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(u.user_id)}
+                          disabled={deletingId === u.user_id}
+                          style={styles.deleteBtn(deletingId === u.user_id)}
+                        >
+                          <IconTrash size={14} stroke={1.75} />
+                          {deletingId === u.user_id ? "Deleting" : "Delete"}
+                        </button>
+                      </div>
+                    </td>
                   )}
-                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
       </div>
+ 
       {showModal && (
-  <div
-    style={{
-      position: "fixed",
-      inset: 0,
-      background: "rgba(0,0,0,.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <div
-      style={{
-        width: 400,
-        background: "#fff",
-        borderRadius: 12,
-        padding: 24,
-      }}
-    >
-      <h2>Edit User</h2>
+        <div style={styles.modalOverlay}>
+          <div style={styles.modalCard}>
+            <h2 style={styles.modalTitle}>Edit user</h2>
 
-      <label>Username</label>
+            <label style={styles.fieldLabel}>Username</label>
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              style={styles.fieldInput}
+            />
 
-      <input
-        name="username"
-        value={form.username}
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginTop: 8,
-          marginBottom: 15,
-        }}
-      />
+            <label style={styles.fieldLabel}>Role</label>
+            <select
+              name="role_id"
+              value={form.role_id}
+              onChange={handleChange}
+              style={styles.fieldSelect}
+            >
+              <option value={1}>Admin</option>
+              <option value={2}>Student</option>
+              <option value={3}>Super admin</option>
+            </select>
 
-      <label>Role</label>
-
-      <select
-        name="role_id"
-        value={form.role_id}
-        onChange={handleChange}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginTop: 8,
-          marginBottom: 20,
-        }}
-      >
-        <option value={1}>Admin</option>
-        <option value={2}>Student</option>
-        <option value={3}>Super Admin</option>
-      </select>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <button
-          onClick={() => {
-            setShowModal(false);
-            setEditingUser(null);
-          }}
-        >
-          Cancel
-        </button>
-
-        <button
-          onClick={handleUpdate}
-          disabled={saving}
-        >
-          {saving ? "Updating..." : "Update"}
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            <div style={styles.modalActions}>
+              <button
+                style={styles.cancelBtn}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingUser(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdate}
+                disabled={saving}
+                onMouseEnter={() => setUpdateHover(true)}
+                onMouseLeave={() => setUpdateHover(false)}
+                style={styles.updateBtn(updateHover, saving)}
+              >
+                {saving ? "Updating…" : "Update"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }
