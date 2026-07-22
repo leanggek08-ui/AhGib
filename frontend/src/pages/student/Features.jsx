@@ -509,6 +509,7 @@ function AssessmentPanel() {
       await assessmentService.completeAssessment(assId);
       const result = await assessmentService.analyzeAssessment(assId);
       setReport(result.data);
+      localStorage.setItem("latestCareerReport", JSON.stringify(result.data));
       setStep("report");
     } catch (err) {
       setError(err.message || "Failed to generate your career report.");

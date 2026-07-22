@@ -6,8 +6,8 @@ import { majorService } from "../../services/majorService";
 import { uniMajorService } from "../../services/uniMajorService";
 import { careerService } from "../../services/careerService";
 import { majorCareerService } from "../../services/majorCareerService";
-import { getUniversityImage } from "../../assets/universityImages";
 import { styles } from "../../styles/studentSearchStyles";
+import { getUniversityImage } from "../../assets/universityImages";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
 

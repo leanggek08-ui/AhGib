@@ -87,4 +87,36 @@ export const styles = {
     fontWeight: "600",
     textDecoration: "none",
   },
+
+  avatarWrap: { position: "relative" },
+  avatarBadge: {
+    position: "absolute", bottom: -2, right: -2, width: 22, height: 22,
+    borderRadius: "50%", background: "#1a0f2e", border: "2px solid #12081f",
+    display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10,
+  },
+  roleBadgeHeader: {
+    marginLeft: "auto", background: "#5313C0", color: "#e9defc",
+    fontSize: 12, fontWeight: 500, padding: "5px 14px", borderRadius: 20,
+  },
+  completionBox: { background: "#1a0f2e", borderRadius: 12, padding: 16, marginBottom: 16 },
+  completionRow: { display: "flex", justifyContent: "space-between", fontSize: 13, color: "#b8aecb", marginBottom: 8 },
+  progressTrack: { height: 6, borderRadius: 3, background: "#2b1a49", overflow: "hidden" },
+  progressFill: { height: "100%", background: "#8a5cf7", borderRadius: 3 },
+  completionHint: { fontSize: 12, color: "#8577a0", margin: "8px 0 0" },
+  statGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 20 },
+  statCard: { background: "#1a0f2e", borderRadius: 12, padding: 14 },
+  statLabel: { fontSize: 12, color: "#9c8fb5", margin: "0 0 4px" },
+  statValue: { fontSize: 22, color: "#fff", fontWeight: 500, margin: 0 },
+  actionRow: { display: "flex", gap: 10 },
+  secondaryButton: {
+    background: "transparent", color: "#c9bfda", border: "1px solid #3a2a5c",
+    borderRadius: 10, padding: "13px 16px", fontSize: 14, textAlign: "center", textDecoration: "none",
+  },
+  backlink: {
+    color: "#b39ddb",
+    fontSize: "13px",
+    textDecoration: "none",
+    display: "inline-block",
+    marginBottom: "8px",
+  },
 };

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import StudentLayout from "../../layouts/StudentLayout";
 import { styles } from "../../styles/studentDashboardStyles";
 
@@ -86,6 +87,19 @@ export default function StudentDashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
   const firstName = user?.username || "there";
 
+  const [report, setReport] = useState(null);
+
+  useEffect(() => {
+    const cached = localStorage.getItem("latestCareerReport");
+    if (cached) {
+      try {
+        setReport(JSON.parse(cached));
+      } catch {
+        setReport(null);
+      }
+    }
+  }, []);
+
   return (
     <StudentLayout>
       <style>{`
@@ -149,75 +163,53 @@ export default function StudentDashboard() {
           </div>
 
           <div style={styles.glassCol}>
-            <div style={styles.glassCard}>
-              <div style={styles.glassCardHeadRow}>
-                <div style={styles.glassIcon}>🧠</div>
-                <div>
-                  <p style={styles.glassTitle}>Your Career Report</p>
-                  <p style={styles.glassSubtitle}>
-                    Personality: The Analytical Visionary
-                  </p>
-                </div>
-                <div style={styles.glassPercentWrap}>
-                  <p style={styles.glassPercentValue}>87%</p>
-                  <p style={styles.glassPercentLabel}>overall match</p>
-                </div>
-              </div>
+  {report ? (
+    <div style={styles.glassCard}>
+      <div style={styles.glassCardHeadRow}>
+        <div style={styles.glassIcon}>🧠</div>
+        <div>
+          <p style={styles.glassTitle}>Your Career Report</p>
+          <p style={styles.glassSubtitle}>
+            {report.summary ? report.summary.slice(0, 60) + "…" : "Latest results"}
+          </p>
+        </div>
+      </div>
 
-              {[
-                { label: "Software Engineer", v: 94 },
-                { label: "Data Scientist", v: 89 },
-                { label: "Product Manager", v: 82 },
-              ].map((m) => (
-                <div key={m.label} style={styles.matchRow}>
-                  <span style={styles.matchLabel}>{m.label}</span>
-                  <div style={styles.matchTrack}>
-                    <div style={styles.matchFill(m.v)} />
-                  </div>
-                  <span style={styles.matchPct}>{m.v}%</span>
-                </div>
-              ))}
-            </div>
+      {(report.top_careers || []).slice(0, 3).map((c) => (
+        <div key={c.name} style={styles.matchRow}>
+          <span style={styles.matchLabel}>{c.name}</span>
+        </div>
+      ))}
 
-            <div style={styles.glassTwoCol}>
-              <div style={styles.glassCard}>
-                <p style={styles.glassSmallLabel}>Top Recommendation</p>
-                <p style={styles.glassSmallTitle}>University of Malaya</p>
-                <p style={styles.glassSmallMeta}>Computer Science · 4 yrs</p>
-                <span style={styles.matchPill}>
-                  <span style={styles.matchPillDot} />
-                  <span style={styles.matchPillText}>94% Match</span>
-                </span>
-              </div>
-              <div style={styles.glassCard}>
-                <p style={styles.glassSmallLabel}>Assessment Progress</p>
-                <p style={styles.glassSmallTitle}>Question 8 of 15</p>
-                <div style={{ ...styles.matchTrack, marginTop: "10px" }}>
-                  <div style={styles.matchFill(53)} />
-                </div>
-                <p style={{ ...styles.glassSmallMeta, marginTop: "6px", marginBottom: 0 }}>
-                  53% complete
-                </p>
-              </div>
-            </div>
-
-            <div style={styles.glassCard}>
-              <div style={styles.typingRow}>
-                <div style={styles.glassIcon}>💬</div>
-                <div>
-                  <p style={styles.glassTitle}>AhGib AI is typing...</p>
-                  <p style={styles.glassSubtitle}>
-                    Generating your personalized career analysis
-                  </p>
-                </div>
-                <div style={styles.typingDots}>
-                  <span style={styles.typingDot} />
-                  <span style={styles.typingDot} />
-                  <span style={styles.typingDot} />
-                </div>
-              </div>
-            </div>
-          </div>
+      <Link
+        to="/student/features"
+        state={{ mode: "assessment" }}
+        style={{ ...styles.ghostLink, marginTop: "12px", display: "inline-block" }}
+      >
+        Retake Assessment →
+      </Link>
+    </div>
+  ) : (
+    <div style={styles.glassCard}>
+      <div style={styles.glassCardHeadRow}>
+        <div style={styles.glassIcon}>🧠</div>
+        <div>
+          <p style={styles.glassTitle}>No report yet</p>
+          <p style={styles.glassSubtitle}>
+            Take your first AI career assessment to see personalized results here.
+          </p>
+        </div>
+      </div>
+      <Link
+        to="/student/features"
+        state={{ mode: "assessment" }}
+        style={{ ...styles.primaryBtn, marginTop: "12px", display: "inline-block" }}
+      >
+        ✨ Start Free Assessment
+      </Link>
+    </div>
+  )}
+</div>
         </div>
       </section>
 

@@ -20,14 +20,6 @@ export default function StudentHeader() {
 
   return (
     <header style={styles.header}>
-      <style>{`
-        @media (max-width: 860px) {
-          .student-nav-list { display: none; }
-          .student-user-name { display: none; }
-          .student-burger { display: flex !important; }
-        }
-      `}</style>
-
       <nav style={styles.nav}>
         <Link to="/student/dashboard" style={styles.logo}>AhGib</Link>
 
@@ -39,12 +31,13 @@ export default function StudentHeader() {
           <li><NavLink to="/student/features" style={linkStyle} onClick={() => setMenuOpen(false)}>Features</NavLink></li>
           <li><NavLink to="/student/search" style={linkStyle} onClick={() => setMenuOpen(false)}>Search</NavLink></li>
           <li><NavLink to="/student/about" style={linkStyle} onClick={() => setMenuOpen(false)}>About Us</NavLink></li>
-          <li><Link to="/student/about#contact" style={styles.navLink} onClick={() => setMenuOpen(false)}>Chat with us</Link></li>
         </ul>
 
         <div style={styles.userArea}>
-          <div style={styles.avatar}>{(user?.username || "S").charAt(0).toUpperCase()}</div>
-          <span className="student-user-name" style={styles.userName}>{user?.username || "Student"}</span>
+          <Link to="/profile" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "inherit" }}>
+            <div style={styles.avatar}>{(user?.username || "S").charAt(0).toUpperCase()}</div>
+            <span className="student-user-name" style={styles.userName}>{user?.username || "Student"}</span>
+          </Link>
           <button onClick={logout} style={styles.logoutBtn}>Logout</button>
         </div>
 
