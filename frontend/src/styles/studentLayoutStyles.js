@@ -19,6 +19,11 @@ export const styles = {
     borderBottom: "1px solid #EFEBFA",
   },
 
+  headerScrolled: {
+    boxShadow: "0 1px 12px rgba(0,0,0,.06)",
+    background: "rgba(255,255,255,.98)",
+  },
+
   nav: {
     maxWidth: "1180px",
     margin: "0 auto",
@@ -37,6 +42,26 @@ export const styles = {
     color: "#111827",
     textDecoration: "none",
     flex: "none",
+  },
+
+  logoRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    textDecoration: "none",
+    flex: "none",
+  },
+
+  logoIcon: {
+    width: "34px",
+    height: "34px",
+    borderRadius: "10px",
+    background: `linear-gradient(135deg, ${colors.primary}, ${colors.accent})`,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "15px",
+    flexShrink: 0,
   },
 
   navList: {
@@ -134,6 +159,7 @@ export const styles = {
   /* ================= Main content ================= */
 
 main: {
+  overflow: "hidden",
   background: "radial-gradient(1000px 500px at 92% -12%, #EFE9FA 0%, #F7F5FC 55%)",
 },
 

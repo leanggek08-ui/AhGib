@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { styles } from "../../styles/studentLayoutStyles";
 
@@ -6,6 +6,13 @@ export default function StudentHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -21,7 +28,10 @@ export default function StudentHeader() {
   return (
     <header style={styles.header}>
       <nav style={styles.nav}>
-        <Link to="/student/dashboard" style={styles.logo}>AhGib</Link>
+        <Link to="/student/dashboard" style={styles.logoRow}>
+          <div style={styles.logoIcon}>✨</div>
+          <span style={styles.logo}>AhGib</span>
+        </Link>
 
         <ul
           className="student-nav-list"
