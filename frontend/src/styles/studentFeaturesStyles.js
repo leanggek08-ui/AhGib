@@ -186,6 +186,21 @@ export const styles = {
     color: colors.primary,
   },
 
+  chipToggle: {
+    width: "36px",
+    height: "36px",
+    borderRadius: "50%",
+    border: `1px solid ${colors.accent}`,
+    background: "transparent",
+    color: colors.primary,
+    fontSize: "12px",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    flexShrink: 0,
+  },
+
   countBadge: {
     fontFamily: "'Plus Jakarta Sans', sans-serif",
     fontSize: "13.5px",

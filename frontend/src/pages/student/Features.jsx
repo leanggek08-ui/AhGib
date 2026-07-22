@@ -120,10 +120,14 @@ function UniversitySearchPanel() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [majorFilter, setMajorFilter] = useState("all");
   const [careerFilter, setCareerFilter] = useState("all");
-
+  const [showAllMajors, setShowAllMajors] = useState(false);
+  const [showAllCareers, setShowAllCareers] = useState(false);
   // Only true once the backend actually starts returning a `type` field on
   // universities (Public/Private) — see the note in the filter row below.
   const hasTypeField = universities.some((u) => u.type);
+  const VISIBLE_COUNT = 6;
+  const visibleMajors = showAllMajors ? majors : majors.slice(0, VISIBLE_COUNT);
+  const visibleCareers = showAllCareers ? careers : careers.slice(0, VISIBLE_COUNT);
 
   useEffect(() => {
     loadAll();
@@ -265,7 +269,7 @@ function UniversitySearchPanel() {
         >
           All
         </button>
-        {majors.map((m) => (
+        {visibleMajors.map((m) => (
           <button
             key={m.major_id}
             style={{
@@ -277,6 +281,15 @@ function UniversitySearchPanel() {
             {m.major_name}
           </button>
         ))}
+        {majors.length > VISIBLE_COUNT && (
+          <button
+            style={styles.chipToggle}
+            onClick={() => setShowAllMajors((v) => !v)}
+            aria-label={showAllMajors ? "Show fewer majors" : "Show all majors"}
+          >
+            {showAllMajors ? "▲" : "▼"}
+          </button>
+        )}
 
         <span style={styles.filterDivider} />
 
@@ -290,7 +303,7 @@ function UniversitySearchPanel() {
         >
           All
         </button>
-        {careers.map((c) => (
+        {visibleCareers.map((c) => (
           <button
             key={c.careers_id}
             style={{
@@ -302,6 +315,15 @@ function UniversitySearchPanel() {
             {c.careers_name}
           </button>
         ))}
+        {careers.length > VISIBLE_COUNT && (
+          <button
+            style={styles.chipToggle}
+            onClick={() => setShowAllCareers((v) => !v)}
+            aria-label={showAllCareers ? "Show fewer careers" : "Show all careers"}
+          >
+            {showAllCareers ? "▲" : "▼"}
+          </button>
+        )}
       </div>
 
       {!error && (
