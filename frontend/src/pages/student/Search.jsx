@@ -8,6 +8,7 @@ import { careerService } from "../../services/careerService";
 import { majorCareerService } from "../../services/majorCareerService";
 import { styles } from "../../styles/studentSearchStyles";
 import { getUniversityImage } from "../../assets/universityImages";
+import { getMajorImage } from "../../assets/majorImages";
 
 const errorBoxStyle = { errorBox: { color: "#ff6b6b", marginBottom: "16px" } };
 
@@ -214,34 +215,44 @@ export default function Search() {
                 </div>
               ) : (
                 <div style={styles.grid}>
-                  {filteredMajors.map((m) => (
-                    <div key={m.major_id} style={{ ...styles.card, ...styles.cardPadded }}>
-                      <div style={styles.iconBox}>📖</div>
-                      <div style={{ ...styles.cardTitle, margin: "12px 0 10px" }}>
-                        {m.major_name}
+                  {filteredMajors.map((m) => {
+                    const photo = getMajorImage(m.major_name);
+                    return (
+                      <div key={m.major_id} style={styles.card}>
+                        <div style={styles.cardImageWrap}>
+                          {photo ? (
+                            <img src={photo} alt={m.major_name} style={styles.cardImage} />
+                          ) : (
+                            <div style={styles.cardImagePlaceholder}>📖</div>
+                          )}
+                        </div>
+
+                        <div style={styles.cardPadded}>
+                          <div style={styles.cardTitle}>{m.major_name}</div>
+                          <div style={styles.statsGrid}>
+                            <div style={styles.statBox}>
+                              <div style={styles.statLabel}>Universities</div>
+                              <div style={styles.statValue}>
+                                {universityCountForMajor(m.major_id)}
+                              </div>
+                            </div>
+                            <div style={styles.statBox}>
+                              <div style={styles.statLabel}>Careers</div>
+                              <div style={styles.statValue}>
+                                {careerCountForMajor(m.major_id)}
+                              </div>
+                            </div>
+                            <div style={styles.statBox}>
+                              <div style={styles.statLabel}>Field</div>
+                              <div style={styles.statValue}>
+                                {m.field_of_study || "—"}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div style={styles.statsGrid}>
-                        <div style={styles.statBox}>
-                          <div style={styles.statLabel}>Universities</div>
-                          <div style={styles.statValue}>
-                            {universityCountForMajor(m.major_id)}
-                          </div>
-                        </div>
-                        <div style={styles.statBox}>
-                          <div style={styles.statLabel}>Careers</div>
-                          <div style={styles.statValue}>
-                            {careerCountForMajor(m.major_id)}
-                          </div>
-                        </div>
-                        <div style={styles.statBox}>
-                          <div style={styles.statLabel}>Field</div>
-                          <div style={styles.statValue}>
-                            {m.field_of_study || "—"}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ))}
 
