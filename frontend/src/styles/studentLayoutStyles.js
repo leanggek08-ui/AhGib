@@ -2,7 +2,6 @@ import { colors } from "./colors";
 
 export const styles = {
   page: {
-    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     background: "#F7F5FC",
@@ -134,16 +133,15 @@ export const styles = {
 
   /* ================= Main content ================= */
 
-  main: {
-    flex: 1,
-    background: "radial-gradient(1000px 500px at 92% -12%, #EFE9FA 0%, #F7F5FC 55%)",
-  },
+main: {
+  background: "radial-gradient(1000px 500px at 92% -12%, #EFE9FA 0%, #F7F5FC 55%)",
+},
 
-  wrap: {
-    maxWidth: "1180px",
-    margin: "0 auto",
-    padding: "40px 32px",
-  },
+wrap: {
+  maxWidth: "1180px",
+  margin: "0 auto",
+  padding: "40px 32px",
+},
 
   /* ================= Footer ================= */
 

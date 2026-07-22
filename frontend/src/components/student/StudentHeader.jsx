@@ -31,6 +31,7 @@ export default function StudentHeader() {
           <li><NavLink to="/student/features" style={linkStyle} onClick={() => setMenuOpen(false)}>Features</NavLink></li>
           <li><NavLink to="/student/search" style={linkStyle} onClick={() => setMenuOpen(false)}>Search</NavLink></li>
           <li><NavLink to="/student/about" style={linkStyle} onClick={() => setMenuOpen(false)}>About Us</NavLink></li>
+          <li><NavLink to="/student/contact" style={linkStyle} onClick={() => setMenuOpen(false)}>Contact</NavLink></li>
         </ul>
 
         <div style={styles.userArea}>

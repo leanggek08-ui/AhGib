@@ -33,6 +33,7 @@ export default function StudentFooter() {
               <Link to="/student/about" style={styles.footerLink}>About Us</Link>
               <Link to="/student/features" style={styles.footerLink}>Features</Link>
               <Link to="/student/search" style={styles.footerLink}>Search</Link>
+              <Link to="/student/contact" style={styles.footerLink}>Contact</Link>
             </div>
           </div>
 

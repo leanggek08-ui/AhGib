@@ -25,6 +25,7 @@ import AdminMajorCareers from "../pages/admin/AdminMajorCareers";
 import StudentDashboard from "../pages/student/StudentDashboard";
 import Features from "../pages/student/Features";
 import Search from "../pages/student/Search";
+import Contact from "../pages/student/Contact";
 
 // React Router doesn't auto-scroll to a #hash on client-side navigation.
 // This makes links like "/about#contact" actually land on that section.
@@ -53,7 +54,7 @@ export default function AppRoutes() {
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route path="/login" element={<Login />} />
-        <Route  path="/about" element={<AboutUs />}/>
+        <Route path="/about" element={<AboutUs />}/>
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/profile" element={<ProtectedRoute allowedRoles={[1,2,3]}><Profile /></ProtectedRoute>}/>
@@ -75,7 +76,7 @@ export default function AppRoutes() {
         <Route path="/student/features" element={<ProtectedRoute allowedRoles={[2]}><Features /></ProtectedRoute>}/>
         <Route path="/student/search" element={<ProtectedRoute allowedRoles={[2]}><Search /></ProtectedRoute>}/>
         <Route path="/student/about" element={<ProtectedRoute allowedRoles={[2]}><StudentAboutUs /></ProtectedRoute>}/>
-        {/* Old routes redirect so any existing bookmarks/links still work */}
+        <Route path="/student/contact" element={<ProtectedRoute allowedRoles={[2]}><Contact /></ProtectedRoute>}/>
         <Route path="/student/universities" element={<Navigate to="/student/features" replace />}/>
         <Route path="/student/careers" element={<Navigate to="/student/features" replace />}/>
         <Route path="/student/majors" element={<Navigate to="/student/features" replace />}/>

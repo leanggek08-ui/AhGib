@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import StudentLayout from "../../layouts/StudentLayout";
 import { styles } from "../../styles/aboutUsStyles";
 import gekleangImg from "../../assets/gekleang.jpg";
@@ -81,7 +82,7 @@ const team = [
     email: "ponharoth.nin@student.cadt.edu.kh",
   },
   {
-    name: "Vanny Deth",
+    name: "Vanny Det",
     role: "AI & System Design",
     bio: "Contributes to system design and AI-powered recommendation logic.",
     image: gekleangImg,
@@ -147,7 +148,7 @@ export default function AboutUs() {
           </div>
           <div style={styles.valuesGrid}>
             {values.map((v) => (
-              <div key={v.title} style={styles.valueCard}>
+              <div key={v.title} style={styles.valueCard} className="about-value-card">
                 <div style={styles.valueIconWrap}>{v.icon}</div>
                 <div style={styles.valueTitle}>{v.title}</div>
                 <p style={styles.valueText}>{v.text}</p>
@@ -179,7 +180,7 @@ export default function AboutUs() {
           <div style={styles.divider} />
           <div style={styles.featureGrid}>
             {features.map((item) => (
-              <div key={item.title} style={styles.featureCard}>
+              <div key={item.title} style={styles.featureCard} className="about-feature-card">
                 <div style={{ ...styles.featureIcon, background: item.gradient }}>
                   {item.icon}
                 </div>
@@ -238,50 +239,20 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* ===== Contact ===== */}
-      <section id="contact" style={styles.section}>
-        <div style={styles.contactCard}>
-          <div style={styles.contactIconLarge}>💬</div>
-          <h2 style={styles.contactHeading}>Get In Touch</h2>
-          <p style={styles.contactSubtitle}>
-            Have questions or feedback? We'd love to hear from you.
-          </p>
-
-          <div style={styles.contactGrid}>
-            <div style={styles.contactItem}>
-              <div style={styles.contactItemIcon}>📧</div>
-              <div>
-                <div style={styles.contactLabel}>Email</div>
-                {team.map((member) => (
-                  <div key={member.email} style={styles.contactValue}>
-                    <a href={`mailto:${member.email}`} style={styles.contactLink}>
-                      {member.email}
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div style={styles.contactItem}>
-              <div style={styles.contactItemIcon}>📞</div>
-              <div>
-                <div style={styles.contactLabel}>Phone</div>
-                <a href="tel:+85587356899" style={styles.contactLink}>
-                  +855 87 356 899
-                </a>
-              </div>
-            </div>
-
-            <div style={styles.contactItem}>
-              <div style={styles.contactItemIcon}>📍</div>
-              <div>
-                <div style={styles.contactLabel}>Location</div>
-                <div style={styles.contactValue}>
-                  Cambodia Academy of Digital Technology, Phnom Penh
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* ===== CTA ===== */}
+      <section style={styles.ctaSection}>
+        <h2 style={styles.ctaHeading}>Ready to discover your future?</h2>
+        <p style={styles.ctaSubtitle}>
+          Join 15,000+ students who have already found their career direction with AhGib.
+          Free to get started.
+        </p>
+        <div style={styles.ctaActions}>
+          <Link to="/register" style={styles.ctaButton}>
+            ✨ Start Free Assessment
+          </Link>
+          <Link to="/student/features" style={styles.ctaLink}>
+            Browse Universities →
+          </Link>
         </div>
       </section>
     </StudentLayout>

@@ -24,7 +24,6 @@ const fullBleed = {
 export const styles = {
   container: {
     background: "#FFFFFF",
-    minHeight: "100vh",
     fontFamily: "'Plus Jakarta Sans', sans-serif",
   },
 
@@ -397,77 +396,65 @@ export const styles = {
     display: "inline-block",
   }),
 
-  /* ===== Contact ===== */
+  ctaSection: {
+  ...fullBleed,
+  background: `linear-gradient(135deg, #1E0B3C 0%, ${colors.primary} 100%)`,
+  padding: "72px 32px",
+  textAlign: "center",
+  marginBottom: "-40px",
+},
 
-  contactCard: {
-    background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.blend} 100%)`,
-    borderRadius: "26px",
-    padding: "48px 32px",
-    textAlign: "center",
-  },
+ctaHeading: {
+  fontFamily: "'Sora', sans-serif",
+  fontSize: "30px",
+  fontWeight: "900",
+  color: "#FFFFFF",
+  marginBottom: "12px",
+},
 
-  contactIconLarge: {
-    fontSize: "36px",
-    marginBottom: "12px",
-  },
+ctaSubtitle: {
+  fontFamily: "'Plus Jakarta Sans', sans-serif",
+  fontSize: "15px",
+  color: "rgba(255,255,255,.75)",
+  marginBottom: "28px",
+  maxWidth: "560px",
+  marginLeft: "auto",
+  marginRight: "auto",
+  lineHeight: "1.7",
+},
 
-  contactHeading: {
-    fontFamily: "'Sora', sans-serif",
-    fontSize: "26px",
-    fontWeight: "900",
-    color: "#FFFFFF",
-    marginBottom: "8px",
-  },
+ctaActions: {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "24px",
+  flexWrap: "wrap",
+},
 
-  contactSubtitle: {
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
-    color: "rgba(255,255,255,.75)",
-    fontSize: "14px",
-    marginBottom: "32px",
-  },
+ctaLink: {
+  fontFamily: "'Plus Jakarta Sans', sans-serif",
+  fontSize: "14.5px",
+  fontWeight: "700",
+  color: "#FFFFFF",
+  textDecoration: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "6px",
+},
 
-  contactGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-    gap: "20px",
-    maxWidth: "800px",
-    margin: "0 auto",
-    textAlign: "left",
-  },
-
-  contactItem: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: "12px",
-  },
-
-  contactItemIcon: {
-    fontSize: "20px",
-    flexShrink: 0,
-  },
-
-  contactLabel: {
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
-    fontSize: "11.5px",
-    fontWeight: "700",
-    color: "rgba(255,255,255,.6)",
-    textTransform: "uppercase",
-    letterSpacing: "0.06em",
-    marginBottom: "4px",
-  },
-
-  contactValue: {
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
-    fontSize: "13.5px",
-    color: "#FFFFFF",
-  },
-
-  contactLink: {
-    fontFamily: "'Plus Jakarta Sans', sans-serif",
-    fontSize: "13.5px",
-    color: "#FFFFFF",
-    textDecoration: "underline",
-  },
+ctaButton: {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: "8px",
+  padding: "14px 28px",
+  borderRadius: "12px",
+  border: "1.5px solid rgba(255,255,255,.6)",
+  color: "#FFFFFF",
+  fontFamily: "'Plus Jakarta Sans', sans-serif",
+  fontSize: "14.5px",
+  fontWeight: "700",
+  textDecoration: "none",
+},
 
   /* ===== Footer ===== */
 
