@@ -48,7 +48,7 @@ export const styles = {
   },
 
   logoSub: {
-    fontSize: "11.5px",
+    fontSize: "13px",
     color: "#B0AA98",
     padding: "0 10px",
     marginBottom: "28px",
@@ -69,7 +69,7 @@ export const styles = {
     textDecoration: "none",
     color: "#8A8576",
     fontWeight: "500",
-    fontSize: "13.5px",
+    fontSize: "16px",
     borderLeft: "2px solid transparent",
     transition: "background 0.12s ease, color 0.12s ease",
   },
@@ -81,9 +81,9 @@ export const styles = {
   },
 
   activeMenu: {
-    background: "#0F6E5614",
-    color: "#0F6E56",
-    borderLeft: "2px solid #0F6E56",
+    background: " #dcd2ee",
+    color: "#6C1EB1",
+    borderLeft: "2px solid #5313C0",
   },
 
   sidebarFooter: {

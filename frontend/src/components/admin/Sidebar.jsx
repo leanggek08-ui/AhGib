@@ -71,7 +71,7 @@ export default function Sidebar() {
               <div style={styles.sectionLabel}>Manage</div>
               <SidebarLink to="/admin/users" icon={IconUsers}>Users</SidebarLink>
               <SidebarLink to="/admin/questions" icon={IconHelpCircle}>Questions</SidebarLink>
-              <SidebarLink to="/admin/universities" icon={IconBuildingBank}>Manage universities</SidebarLink>
+              <SidebarLink to="/admin/universities" icon={IconBuildingBank}>Universities</SidebarLink>
               <SidebarLink to="/admin/majors" icon={IconSchool}>Majors</SidebarLink>
               <SidebarLink to="/admin/careers" icon={IconBriefcase}>Careers</SidebarLink>
               <SidebarLink to="/admin/university-majors" icon={IconAffiliate}>University majors</SidebarLink>
@@ -94,7 +94,7 @@ export default function Sidebar() {
       <div style={styles.sidebarFooter}>
         <div style={styles.divider} />
         <button onClick={logout} style={styles.logout}>
-          <IconLogout size={16} stroke={1.75} />
+          <IconLogout size={32} stroke={1.75} />
           Logout
         </button>
       </div>
