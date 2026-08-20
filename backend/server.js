@@ -19,11 +19,30 @@ import academicScoreRoutes from "./routes/academicScore.js";
 import dotenv from "dotenv";
 import aiRoutes from "./routes/ai.js";
 import pool from "./db/db.js";
+import { Telegraf } from "telegraf";
 const app = express();
 
 dotenv.config();
 const PORT = process.env.PORT || 5000;
 
+// 2. Fetch the token securely
+const botToken = process.env.TELEGRAM_BOT_TOKEN;
+
+if (!botToken) {
+  console.error("ERROR: TELEGRAM_BOT_TOKEN is missing in your .env file!");
+  process.exit(1);
+}
+
+const bot = new Telegraf(botToken);
+
+bot.start((ctx) => ctx.reply("Welcome! Thanks for starting this bot."));
+bot.catch((error) => {
+  console.error("Telegram bot error:", error);
+});
+
+// Enable graceful stop
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || "http://localhost:5173",
@@ -91,6 +110,10 @@ app.use((error, req, res, next) => {
 async function startServer() {
   try {
     await pool.query("SELECT 1");
+
+    await bot.launch();
+    console.log("Telegram bot is running in polling mode");
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT} (database connected)`);
       console.log(`University API: http://localhost:${PORT}/api/universities`);
