@@ -10,6 +10,11 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx">
+      // Initialize Telegram Mini App
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand(); // Expands the app to full height if needed
+    </script>
   </body>
 </html>
